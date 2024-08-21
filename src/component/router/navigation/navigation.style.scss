@@ -1,0 +1,60 @@
+.navigation-container {
+    font-size: 15px;
+    background-color: #F9502F;
+    margin: 0;
+    padding: 10px 0px;
+    color: white;
+
+}
+
+.nav-bar {
+    display: flex;
+}
+
+.nav-bar-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 220px;
+}
+
+.nav-link-container {
+    margin: 0px 10px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: rgb(221, 218, 218);
+    transition: 0.2s;
+}
+
+
+
+.search-box {
+    background-color: #FE6032;
+    display: flex;
+    align-items: center;
+
+}
+
+.icon-shopee-logo {
+    height: 4rem;
+    width: 11.875rem;
+    fill: #fff;
+    margin: 0 220px;
+
+}
+
+input {
+    height: 25px;
+    width: 500px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
