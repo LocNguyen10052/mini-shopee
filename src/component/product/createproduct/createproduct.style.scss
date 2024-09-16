@@ -1,0 +1,47 @@
+.create-product-form {
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
+}
+
+.create-product-form_input {
+    display: flex;
+    margin-top: 20px;
+}
+
+.create-product-form_input-input,
+.inputDescription {
+    width: 500px;
+}
+
+.create-product-form_input-label {
+    width: 200px;
+    margin-right: 10px;
+    text-align: left;
+}
+
+.create-product-form_productclassification {
+    padding: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: left;
+    position: relative;
+}
+
+.button-close_form_productclassification {
+    position: absolute;
+    top: 10px;
+    /* Khoảng cách từ mép trên */
+    right: 10px;
+    /* Khoảng cách từ mép phải */
+
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

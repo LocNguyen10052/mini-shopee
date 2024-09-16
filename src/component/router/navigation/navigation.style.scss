@@ -7,8 +7,124 @@
 
 }
 
+.header-navbar-background {
+    background-image: url('https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/74e7710903007bb7.png');
+
+}
+
+.header-navbar-instagram-png {
+    background-position: 58.064516129032256% 16.129032258064516%;
+    background-size: 487.5% 293.75%;
+}
+
+.header-navbar-facebook-png {
+    background-position: 8.064516129032258% 16.129032258064516%;
+    background-size: 487.5% 293.75%;
+}
+
+.span-class {
+    margin: 2px;
+}
+
+.cart-icon-container {
+    width: 45px;
+    height: 45px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+
+    .shopping-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .item-count {
+        position: absolute;
+        font-size: 10px;
+        font-weight: bold;
+        bottom: 12px;
+    }
+}
+
+.icon-notification-2 {
+    height: 1.125rem;
+    width: .875rem;
+
+}
+
+.header-with-search__search-section>.shopee-searchbar {
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .09);
+    width: 100%;
+}
+
+.header-with-search__search-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    width: 840px;
+}
+
+.shopee-searchbar-input__input {
+    outline: none;
+    border: 0;
+}
+
+.shopee-searchbar-input__input:focus {
+    border: 0;
+}
+
+.shopee-searchbar {
+    --focus-indicator-spacing: 3px;
+    align-items: stretch;
+    background: #fff;
+    border-radius: 2px;
+    box-sizing: border-box;
+    display: flex;
+    height: 2.5rem;
+    justify-content: space-between;
+    padding: .1875rem;
+}
+
+.shopee-svg-icon {
+    /* display: inline-block; */
+    height: 1em;
+    /* width: 1em; */
+    fill: currentColor;
+    position: relative;
+}
+
+.L8d8QY {
+    height: 16px;
+    width: 16px;
+}
+
 .nav-bar {
     display: flex;
+}
+
+.r6OuTw .EKO5kv,
+.r6OuTw .Gd1Epy,
+.r6OuTw .L8d8QY,
+.r6OuTw .Mh6sPW,
+.r6OuTw .YNvhfh,
+.r6OuTw .qSHh5m,
+.r6OuTw .zXnmLI {
+    display: inline-block;
+    margin-right: 10px;
+    overflow: hidden;
+    text-align: left;
+    text-indent: -9999px;
+}
+
+.r6OuTw .Gd1Epy,
+.r6OuTw .L8d8QY,
+.r6OuTw .Mh6sPW {
+    height: 16px;
+    width: 16px;
 }
 
 .nav-bar-container {
@@ -18,11 +134,15 @@
 }
 
 .nav-link-container {
-    margin: 0px 10px;
+    margin: 0px 5px;
 }
 
+
+
+
+
 .nav-link {
-    color: white;
+
     text-decoration: none;
 }
 
@@ -52,6 +172,10 @@ input {
     height: 25px;
     width: 500px;
 }
+
+
+
+
 
 ul {
     list-style: none;

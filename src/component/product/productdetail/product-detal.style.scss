@@ -1,0 +1,131 @@
+.product-info-detail-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.product-info-detail-image {
+    flex: 1;
+}
+
+.product-info-detail-image img {
+    width: 300px;
+    height: auto;
+}
+
+.product-info-detail-small-images {
+
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.product-info-detail-small-images img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.product-info-detail-info {
+    text-align: left;
+    flex: 1;
+    padding-left: 20px;
+}
+
+.product-info-detail-info h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.product-info-detail-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.product-info-detail-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.product-info-detail-old-price {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.product-info-detail-discount-price {
+    font-size: 24px;
+    color: red;
+}
+
+.product-info-detail-discount-percentage {
+    background-color: #ff424e;
+    color: white;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+
+.product-info-detail-color-options,
+.product-info-detail-size-options {
+    margin-bottom: 15px;
+}
+
+.product-info-detail-colors,
+.product-info-detail-sizes {
+    display: flex;
+    gap: 10px;
+}
+
+.product-info-detail-color,
+.product-info-detail-size {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.product-info-detail-color:hover,
+.product-info-detail-size:hover {
+    border-color: #ff424e;
+}
+
+.product-info-detail-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-info-detail-quantity button {
+    width: 30px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.product-info-detail-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product-info-detail-add-to-cart,
+.product-info-detail-buy-now {
+    padding: 10px 20px;
+    background-color: #ff424e;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.product-info-detail-add-to-cart:hover,
+.product-info-detail-buy-now:hover {
+    background-color: #ff1e3c;
+}

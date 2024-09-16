@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
+import UserProvide from './component/context/user.context';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <UserProvide>
+          <App />
+        </UserProvide>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 

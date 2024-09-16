@@ -1,0 +1,120 @@
+.login-container {
+    display: flex;
+    height: 70vh;
+    background-color: #EE4D2D;
+    background-image: url('https://down-vn.img.susercontent.com/file/sg-11134004-7rdww-lz7fzhaqivg745');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+
+
+
+
+.login-left .logo img {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+.login-left p {
+    font-size: 18px;
+    text-align: center;
+    max-width: 300px;
+}
+
+.login-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.login-form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.qr-login p {
+    background-color: #ff9900;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-align: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.input-signup {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.login-button {
+    background-color: #ea5a47;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.login-links {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.login-links a {
+    color: #ea5a47;
+    text-decoration: none;
+}
+
+.login-social {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.social-button {
+    display: inline-block;
+    padding: 10px;
+    width: 45%;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.social-button.facebook {
+    background-color: #3b5998;
+    color: white;
+}
+
+.social-button.google {
+    background-color: #db4437;
+    color: white;
+}
+
+.login-form p {
+    text-align: center;
+    color: #666;
+}
+
+.login-form p a {
+    color: #ea5a47;
+    text-decoration: none;
+}

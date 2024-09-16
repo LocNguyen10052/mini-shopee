@@ -1,0 +1,124 @@
+.product-card {
+    width: 200px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #fff;
+    color: black;
+    /* Màu chữ đen */
+    text-decoration: none;
+    text-align: left;
+}
+
+.product-card__image-container {
+    position: relative;
+}
+
+.product-card__image {
+    width: 100%;
+    height: auto;
+}
+
+
+
+.product-card__header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+}
+
+.product-card__label {
+    background-color: red;
+    color: white;
+    padding: 2px 4px;
+    font-size: 12px;
+    border-radius: 2px;
+}
+
+.product-card__badge {
+    background-color: #ff6600;
+    color: white;
+    padding: 2px 4px;
+    font-size: 12px;
+    border-radius: 2px;
+}
+
+.product-card__info {
+    padding: 8px;
+}
+
+.product-card__title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    /* Giới hạn 2 dòng */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    /* Điều chỉnh khoảng cách giữa các dòng */
+    max-height: 3em;
+
+}
+
+.product-card__badges {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.badge {
+    padding: 2px 4px;
+    font-size: 10px;
+    border-radius: 2px;
+    color: white;
+}
+
+.badge--red {
+    background-color: red;
+}
+
+.badge--orange {
+    background-color: #ff6600;
+}
+
+.product-card__pricing {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.price--new {
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.price--old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.discount {
+    color: green;
+    font-size: 12px;
+}
+
+.product-card__stats {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.product-card__location {
+    font-size: 12px;
+    color: #666;
+}
