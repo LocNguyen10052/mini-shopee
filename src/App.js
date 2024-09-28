@@ -11,29 +11,46 @@ import ListCategory from './component/category/listcategory/listcategory.compoen
 import ProductDetail from './component/product/productdetail/product-detail.component';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { createUser, onStateAuthChangeListener } from './utils/firebase.utils';
+import { createUser, listAllCategory, onStateAuthChangeListener } from './utils/firebase.utils';
 import { setCurrentUser } from './store/user-store/user-action';
-
+import { setCategories } from './store/category-store/category-action';
+import { getCart } from './utils/firebase.cart';
+import { setCart } from './store/cart-store/cart-action';
+import Checkout from './component/Checkout/checkoutDirectory/checkout.component';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onStateAuthChangeListener((user) => {
+
+  }, [])
+  useEffect(() => {
+    const getListCategories = async () => {
+      const categoriesData = await listAllCategory();
+      dispatch(setCategories(categoriesData))
+    }
+
+    const unsubscribe = onStateAuthChangeListener(async (user) => {
       if (user) {
         createUser(user);
       }
       dispatch(setCurrentUser(user));
-    });
+      if (user) {
+        const carts = await getCart(user.email)
+        console.log(carts)
+        dispatch(setCart(carts))
+      }
 
+
+    });
     return unsubscribe;
   }, [dispatch]);
-
   return (
     <Routes>
       <Route path='/' element={<Home></Home>}>
         <Route index={true} element={<Directory></Directory>}></Route>
         <Route path="/category/:categoryid" element={<ListCategory></ListCategory>}></Route>
+        <Route path="/checkout" element={<Checkout></Checkout>}></Route>
       </Route>
       <Route path='/signin' element={<SignIn />}></Route>
       <Route path='/signup' element={<SignUp></SignUp>}></Route>

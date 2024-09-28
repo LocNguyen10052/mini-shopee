@@ -11,8 +11,9 @@ import { CategoriesContext } from '../context/categories.context';
 import { UserContext } from '../context/user.context';
 import { Outlet, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCategories } from '../../store/category-store/category-action';
+import { getCategories, getListCategories, setCategories } from '../../store/category-store/category-action';
 import { CATEGORY_ACTIONS_TYPE } from '../../store/category-store/category-reducer';
+import { selectCategories } from '../../store/category-store/category-selector';
 
 // const categories = [
 //     {
@@ -69,14 +70,11 @@ import { CATEGORY_ACTIONS_TYPE } from '../../store/category-store/category-reduc
 // ]
 
 function Directory(props) {
-    const currentCategories = useSelector((state) => state.categories.categoriesMap)
+    const currentCategories = useSelector(selectCategories)
     const dispatch = useDispatch()
-    const getListCategories = async () => {
-        const categoriesData = await listAllCategory();
-        dispatch(setCategories(categoriesData))
-    }
+
     useEffect(() => {
-        getListCategories()
+        getListCategories(dispatch)
     }, [])
     const settings = {
         dots: false,

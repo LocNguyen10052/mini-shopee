@@ -2,9 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './product.style.scss'
 import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../../store/user-store/user-seletor';
+import { addToCartAction } from '../../../store/cart-store/cart-action';
 
 
 function Product({ product }) {
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser)
     const {
         ID,
         createdAt,
@@ -15,8 +21,15 @@ function Product({ product }) {
         productSoldCount,
         productTitle
     } = product
+    const addCartDropBox = async (event) => {
+        const productID = product.ID
+        const userID = currentUser.email
+        await addToCartAction(dispatch, { productID, userID })
+        alert("Add success " + productName)
+    }
     return (
-        <Link className="product-card" to={`/product/detail/${ID}`}>
+        // <Link className="product-card" to={`/product/detail/${ID}`}>
+        <Link className="product-card" >
             <img
                 src={productImage}
                 alt="Thắt lưng nam"
@@ -40,6 +53,7 @@ function Product({ product }) {
                     {productLocation}
                 </div>
             </div>
+            <Button style={{ backgroundColor: '#F9502F', border: '0' }} onClick={addCartDropBox}>Add to cart</Button>
         </Link>
     );
 }

@@ -8,17 +8,99 @@
     border: 1px solid black;
     background-color: white;
     top: 50px;
-    right: 20px;
+    right: 40px;
     z-index: 5;
 
+
+    .empty-message {
+        font-size: 18px;
+        margin: 50px auto;
+    }
+
     .cart-items {
-        height: 240px;
+
+        height: 300px;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: scroll;
+
     }
 
     button {
         margin-top: auto;
+    }
+}
+
+/* Tùy chỉnh toàn bộ scrollbar cho .cart-items */
+.cart-items::-webkit-scrollbar {
+    width: 12px;
+    /* Độ rộng của scrollbar dọc */
+    height: 8px;
+    /* Độ cao của scrollbar ngang */
+}
+
+/* Track của scrollbar */
+.cart-items::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Màu nền của track */
+    border-radius: 10px;
+    /* Bo góc track */
+}
+
+/* Thumb (phần kéo) của scrollbar */
+.cart-items::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Màu của thumb */
+    border-radius: 10px;
+    /* Bo góc thumb */
+    border: 2px solid #f1f1f1;
+    /* Thêm đường viền xung quanh thumb */
+}
+
+/* Thumb khi hover */
+.cart-items::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+    /* Đổi màu khi hover */
+}
+
+/* Track khi hover */
+.cart-items::-webkit-scrollbar-track:hover {
+    background-color: #e1e1e1;
+    /* Đổi màu khi hover trên track */
+}
+
+.cart-item-container {
+    width: 100%;
+    display: flex;
+    height: 80px;
+    margin-bottom: 15px;
+
+    img {
+        width: 30%;
+    }
+
+    .item-details {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 10px 20px;
+
+        .name {
+            font-size: 18px;
+            white-space: nowrap;
+            width: 15ch;
+            /* Ngăn chặn ngắt dòng */
+            white-space: nowrap;
+            /* Không cho phép ngắt dòng */
+            overflow: hidden;
+            /* Ẩn nội dung tràn ra ngoài */
+            text-overflow: ellipsis;
+            /* Thêm dấu "..." khi vượt quá giới hạn */
+
+
+        }
     }
 }

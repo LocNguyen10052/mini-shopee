@@ -3,31 +3,31 @@ import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { findAllProductByCategoryID, findProductByID } from '../../../utils/firebase.createproduct';
 import './product-detal.style.scss'
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCategories } from '../../../store/category-store/category-selector';
 
 
 function ProductDetail() {
     const [product, setProduct] = useState('');
     const { productID } = useParams();
+    const catelgory = useSelector(selectCategories);
     const getProductByID = async () => {
         const ProductByID = await findProductByID(productID);
         setProduct(ProductByID)
     }
     useEffect(() => {
+        console.log("render")
         getProductByID();
     }, [])
     return (
         <div className="product-info-detail-card">
-            {/* Hình ảnh sản phẩm */}
             <div className="product-info-detail-image">
                 <img src={product.productImage} alt="Product" />
                 <div className="product-info-detail-small-images">
-                    {/* Thêm các hình ảnh nhỏ */}
                     <img src={product.productImage} alt="Small 1" />
 
                 </div>
             </div>
-
-            {/* Thông tin sản phẩm */}
             <div className="product-info-detail-info">
                 <h1>{product.productName}</h1>
                 <div className="product-info-detail-rating">
@@ -38,18 +38,14 @@ function ProductDetail() {
                     <span className="product-info-detail-discount-price">{product.productPrice}</span>
                     {/* <span className="product-info-detail-discount-percentage">46% GIẢM</span> */}
                 </div>
-
-                {/* Màu sản phẩm */}
                 <div className="product-info-detail-color-options">
                     <label>Màu</label>
                     <div className="product-info-detail-colors">
                         <button className="product-info-detail-color">Trắng NY</button>
                         <button className="product-info-detail-color">Đen NY</button>
-                        {/* Thêm các màu khác */}
+
                     </div>
                 </div>
-
-                {/* Kích cỡ */}
                 <div className="product-info-detail-size-options">
                     <label>Size</label>
                     <div className="product-info-detail-sizes">
@@ -58,8 +54,6 @@ function ProductDetail() {
                         <button className="product-info-detail-size">XL &lt; 72kg</button>
                     </div>
                 </div>
-
-                {/* Thêm vào giỏ hàng */}
                 <div className="product-info-detail-quantity">
                     <button>-</button>
                     <input type="number" value="1" />

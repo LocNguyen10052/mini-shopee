@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { findAllProductByCategoryID } from '../../../utils/firebase.createproduct';
 import Category from '../category/category.component';
 import Product from '../../product/productcard/product.component';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 
 function ListCategory(props) {
     const { categoryid } = useParams();
@@ -11,9 +11,9 @@ function ListCategory(props) {
 
     const getProductByID = async () => {
         const listProductByID = await findAllProductByCategoryID(categoryid);
-
         setProducts(listProductByID)
     }
+
     useEffect(() => {
         getProductByID();
     }, [])
@@ -21,8 +21,9 @@ function ListCategory(props) {
         <Container>
             <Row>
                 {products.map((product) => (
-                    <Col >
-                        < Product product={product} ></Product>
+                    <Col key={product.ID} >
+                        < Product product={product}></Product>
+
                     </Col>
 
                 ))

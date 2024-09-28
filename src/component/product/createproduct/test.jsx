@@ -108,4 +108,4 @@ function CreateProduct({ onCreate }) {
     );
 }
 
-export default CreateProduct;
+

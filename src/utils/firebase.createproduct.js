@@ -11,9 +11,11 @@ export const createProduct = async (categoryID, productCreate, image) => {
 
     try {
         if (arrayProduct.length === 0) {
-            const { productName, productTitle, productPrice, productSoldCount, productLocation, categoryID } = productCreate
+            const { productName, productTitle, productPrice, productSoldCount, productLocation } = productCreate
             const createdAt = new Date()
+
             try {
+
                 const imgRef = ref(storage, `files/productImage/${v4()}`)
                 uploadBytes(imgRef, image, { contentType: 'image/png' }).then(async (snapshot) => {
                     await setDoc(productdocRef, {
@@ -25,11 +27,10 @@ export const createProduct = async (categoryID, productCreate, image) => {
                         productSoldCount,
                         productLocation,
                         categoryID
-
                     })
-                    console.log(productCreate)
-                }).catch(() => {
-                    return
+
+                }).catch((error) => {
+                    console.log(error)
                 });
             } catch (error) {
                 console.log(error + "ProductCreate")
@@ -37,6 +38,7 @@ export const createProduct = async (categoryID, productCreate, image) => {
         }
         else {
             alert("Product đã tồn tại")
+
         }
     } catch (error) {
         console.log(error)

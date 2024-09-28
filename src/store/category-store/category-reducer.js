@@ -1,5 +1,8 @@
+import { listAllCategory } from "../../utils/firebase.utils";
+
 export const CATEGORY_ACTIONS_TYPE = {
-    SET_CATEGORIES: 'SET_CATEGORIES'
+    SET_CATEGORIES: 'SET_CATEGORIES',
+    GET_CATEGORIES: 'GET_CATEGORIES'
 }
 
 const INITIAL_CATEGORIES = {
