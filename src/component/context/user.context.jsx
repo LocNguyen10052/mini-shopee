@@ -14,7 +14,7 @@ export default function UserProvide({ children }) {
 
             setCurrentUser(user);
         })
-        console.log(unsub)
+
     }, [])
     return (<UserContext.Provider value={value}>{children}</UserContext.Provider>)
 }

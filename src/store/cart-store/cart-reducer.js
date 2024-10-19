@@ -10,10 +10,8 @@ export const cartReducer = (
     action = {}
 ) => {
     const { type, payload } = action;
-
     switch (type) {
         case CART_ACTIONS_TYPE.SET_CART: {
-
             return { ...state, carts: payload };
         }
 

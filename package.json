@@ -19,7 +19,9 @@
     "react-slick": "^0.30.2",
     "redux": "^5.0.1",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "reselect": "^5.1.1",
     "sass": "^1.77.8",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"

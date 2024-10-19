@@ -1,34 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { addTocart } from '../../../utils/firebase.cart';
+import { addTocart, getCartSnapShoot, removeCart } from '../../../utils/firebase.cart';
 import './cartItem.style.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
-import { addToCartAction } from '../../../store/cart-store/cart-action';
+import { addToCartAction, deleteCartAction, removeCartAction } from '../../../store/cart-store/cart-action';
 
 function CartItem({ cart }) {
     const currentUser = useSelector(selectCurrentUser)
     const dispatch = useDispatch()
-
     const [quanlity, setQuanlity] = useState(cart.quanlity)
 
-    const removeItemHandler = () => {
-
+    const removeItemHandler = async () => {
+        await removeCartAction(dispatch, { productID: cart.productID, userID: currentUser.email })
     }
     const addItemHandler = async (event) => {
-        const newQuantity = quanlity + 1
-        setQuanlity(newQuantity)
         await addToCartAction(dispatch, { productID: cart.productID, userID: currentUser.email })
     }
-    const clearItemHandler = () => {
-
+    const clearItemHandler = async () => {
+        await deleteCartAction(dispatch, { productID: cart.productID, userID: currentUser.email })
     }
-
 
     return (
         <div>
             <div>
-
                 <div key={cart.productID}>
                     <div className='checkout-item-container'>
                         <div className='image-container'>
@@ -39,7 +34,7 @@ function CartItem({ cart }) {
                             <div className='arrow' onClick={removeItemHandler}>
                                 &#10094;
                             </div>
-                            <span className='value'>{quanlity}</span>
+                            <span className='value'>{cart.quanlity}</span>
                             <div className='arrow' onClick={addItemHandler}>
                                 &#10095;
                             </div>

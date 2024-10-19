@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getCarts } from '../../../store/cart-store/cart-selector';
+import { selectCartReducer } from '../../../store/cart-store/cart-selector';
 import './checkout.style.scss'
 import { Container } from 'react-bootstrap';
-import { addTocart } from '../../../utils/firebase.cart';
+import { addTocart, getCartSnapShoot } from '../../../utils/firebase.cart';
 import CartItemComponent from '../cartitem/cartItem.component';
 
 
 function Checkout() {
-    const carts = useSelector(getCarts)
+
+    const carts = useSelector(selectCartReducer)
     const [total, setCartTotal] = useState()
     useEffect(() => {
         const newCartTotal = carts.reduce(
             (total, cartItem) => total + cartItem.quanlity * cartItem.productPrice,
             0
         );
-        console.log(newCartTotal)
         setCartTotal(newCartTotal);
     }, [total, carts])
 

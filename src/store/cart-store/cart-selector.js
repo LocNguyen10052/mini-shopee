@@ -1,1 +1,7 @@
-export const getCarts = (state) => state.carts.carts
+import { createSelector } from 'reselect';
+
+export const selectCartReducer = (state) => {
+    return state.carts.carts
+}
+
+export const selectCartItems = createSelector([selectCartReducer], (carts) => carts)

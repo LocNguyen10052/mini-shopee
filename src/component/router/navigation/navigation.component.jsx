@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 function Navigation() {
     const currentUser = useSelector((state) => state.user.currentUser)
-    const [isCartOpen, setIsCartOpen] = useState();
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     const toggleIsCartOpen = () => {
         setIsCartOpen(!isCartOpen)
@@ -130,6 +130,7 @@ function Navigation() {
                     <ShoppingIcon className='shopping-icon' />
                     <span className='item-count'>0</span>
                     {isCartOpen && <DropBoxCart />}
+
                 </div>
             </div>
 

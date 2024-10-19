@@ -13,10 +13,11 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { createUser, listAllCategory, onStateAuthChangeListener } from './utils/firebase.utils';
 import { setCurrentUser } from './store/user-store/user-action';
-import { setCategories } from './store/category-store/category-action';
-import { getCart } from './utils/firebase.cart';
-import { setCart } from './store/cart-store/cart-action';
+import { getListCategories, setCategories } from './store/category-store/category-action';
+import { getCart, getCartSnapShoot } from './utils/firebase.cart';
+import { getCartCartAction, setCart } from './store/cart-store/cart-action';
 import Checkout from './component/Checkout/checkoutDirectory/checkout.component';
+import GannSquare from './component/test/test';
 
 function App() {
   const dispatch = useDispatch();
@@ -25,24 +26,20 @@ function App() {
 
   }, [])
   useEffect(() => {
-    const getListCategories = async () => {
-      const categoriesData = await listAllCategory();
-      dispatch(setCategories(categoriesData))
-    }
-
     const unsubscribe = onStateAuthChangeListener(async (user) => {
       if (user) {
         createUser(user);
       }
       dispatch(setCurrentUser(user));
       if (user) {
-        const carts = await getCart(user.email)
-        console.log(carts)
-        dispatch(setCart(carts))
+        getCartSnapShoot(user.email, dispatch)
       }
-
-
     });
+
+    const getList = async () => {
+      await getListCategories(dispatch)
+    }
+    getList()
     return unsubscribe;
   }, [dispatch]);
   return (
@@ -57,6 +54,7 @@ function App() {
       <Route path='/CreateCategory' element={<CategoryCreate></CategoryCreate>}></Route>
       <Route path='/item' element={<CreateProduct></CreateProduct>}></Route>
       <Route path='/product/detail/:productID' element={<ProductDetail></ProductDetail>}></Route>
+
     </Routes>
 
   );

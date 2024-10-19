@@ -1,8 +1,9 @@
-import { addDoc, and, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "./firebase.utils";
 import { v4 } from "uuid";
-import { findProductByID } from "./firebase.createproduct";
+import { findProductByID, findProductByIDSnapShoot } from "./firebase.createproduct";
+import { setCart } from "../store/cart-store/cart-action";
 
 export const addTocart = async (productID, userID) => {
     // const productdocRef = doc(db, `categories/${categoryID}`, `Product/${v4()}`)
@@ -84,4 +85,52 @@ export const getCart = async (userID) => {
         return cartData;
     }))
     return cartsData;
+}
+export const removeCart = async (productID, userID) => {
+    const cartQuery = await query(collection(db, "cart"), and(where("productID", "==", productID), where("userID", "==", userID)));
+    const arrayQuerycartSnapshot = await getDocs(cartQuery);
+    const CartQuery = arrayQuerycartSnapshot.docs[0]
+    const cartDoc = doc(db, "cart", CartQuery.id)
+    const cartdocSnap = await getDoc(cartDoc)
+    const cartData = CartQuery.data()
+    try {
+        await setDoc(cartDoc, {
+            ...cartData,
+            quanlity: cartData.quanlity - 1
+        });
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const deleteCart = async (productID, userID) => {
+    const cartQuery = await query(collection(db, "cart"), and(where("productID", "==", productID), where("userID", "==", userID)));
+    const arrayQuerycartSnapshot = await getDocs(cartQuery);
+    const CartQuery = arrayQuerycartSnapshot.docs[0]
+    const cartDoc = doc(db, "cart", CartQuery.id)
+    await deleteDoc(cartDoc);
+}
+
+
+export const getCartSnapShoot = async (userID, dispatch) => {
+    const cartQuery = await query(collection(db, "cart"), where("userID", "==", userID));
+    const unsubscribe = onSnapshot(cartQuery, async (queryCartSnapshot) => {
+        const updatedCarts = await Promise.all(queryCartSnapshot.docs.map(async (doc) => {
+            const cartData = doc.data();
+            const product = await findProductByID(cartData.productID);
+            return {
+                ...cartData,
+                productImage: product.productImage,
+                productName: product.productName,
+                categoryID: product.categoryID,
+                productLocation: product.productLocation,
+                productPrice: product.productPrice,
+                productSoldCount: product.productSoldCount
+            };
+        }));
+        dispatch(setCart([...updatedCarts]));
+    });
+}
+
+export const updateCart = () => {
+
 }

@@ -4,6 +4,8 @@ import { getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, Recap
 import { getFirestore, doc, getDoc, setDoc, query, where, collection, getDocs, addDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, list, listAll, ref, uploadBytes } from 'firebase/storage'
 import { v4 } from "uuid";
+import { persistor } from "../store/store";
+
 
 //Firebase config
 const firebaseConfig = {
@@ -28,7 +30,13 @@ export const auth = new getAuth();
 // sign in with pop up
 export const signInWithGoogleAccountPopUp = async () => signInWithPopup(auth, provider)
 
-export const signOutUser = async () => await signOut(auth);
+export const signOutUser = async () => {
+    persistor.pause();
+    persistor.flush().then(() => {
+        return persistor.purge(['carts']);
+    });
+    await signOut(auth)
+};
 // sign in with Email and Password
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
     if (!email || !password) return;

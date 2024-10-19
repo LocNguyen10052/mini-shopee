@@ -5,7 +5,7 @@ import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
 import Category from '../category/category/category.component';
 import Slider from "react-slick"
 import ButtonCuttom from '../button/button.component';
-import { listAllCategory, onStateAuthChangeListener } from '../../utils/firebase.utils';
+import { createUser, listAllCategory, onStateAuthChangeListener } from '../../utils/firebase.utils';
 import { getDownloadURL } from 'firebase/storage';
 import { CategoriesContext } from '../context/categories.context';
 import { UserContext } from '../context/user.context';
@@ -13,7 +13,7 @@ import { Outlet, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories, getListCategories, setCategories } from '../../store/category-store/category-action';
 import { CATEGORY_ACTIONS_TYPE } from '../../store/category-store/category-reducer';
-import { selectCategories } from '../../store/category-store/category-selector';
+import { selectCategoriesReducer } from '../../store/category-store/category-selector';
 
 // const categories = [
 //     {
@@ -70,11 +70,12 @@ import { selectCategories } from '../../store/category-store/category-selector';
 // ]
 
 function Directory(props) {
-    const currentCategories = useSelector(selectCategories)
+
+    const currentCategories = useSelector(selectCategoriesReducer)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        getListCategories(dispatch)
+
     }, [])
     const settings = {
         dots: false,

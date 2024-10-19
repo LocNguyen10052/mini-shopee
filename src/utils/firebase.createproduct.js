@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "./firebase.utils";
 import { v4 } from "uuid";
@@ -82,4 +82,36 @@ export const findProductByID = async (productID) => {
         return product !== undefined
     })
     return productdata
+}
+export const findProductByIDSnapShoot = async (productID) => {
+    const categoriesFromDoc = await query(collection(db, `categories`));
+    const categories = [];
+
+    const categoriesSnapshot = await getDocs(categoriesFromDoc); // Sử dụng getDocs để lấy dữ liệu một lần
+    categoriesSnapshot.forEach((doc) => {
+        categories.push(doc);
+    });
+
+    const promises = categories.map(async (category) => {
+        const productRef = doc(db, `categories/${category.id}/Product`, productID);
+        const productSnapshot = await getDoc(productRef); // Sử dụng getDoc để lấy dữ liệu một lần
+
+        if (productSnapshot.exists()) {
+            const product = productSnapshot.data();
+            const url = await getDownloadURL(ref(storage, `${product.productImage}`));
+            return {
+                productImage: url,
+                productName: product.productName,
+                categoryID: product.categoryID,
+                productLocation: product.productLocation,
+                productPrice: product.productPrice,
+                productSoldCount: product.productSoldCount
+            };
+        }
+        return {};
+    });
+
+    // Chờ tất cả các promises hoàn thành
+    const products = await Promise.all(promises);
+    return products.find(product => Object.keys(product).length > 0) || {}; // Trả về sản phẩm đầu tiên tìm thấy
 }

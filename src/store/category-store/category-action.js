@@ -8,5 +8,4 @@ export const setCategories = (categories) =>
 export const getListCategories = async (dispatch) => {
     const categoriesData = await listAllCategory();
     dispatch(setCategories(categoriesData))
-
 }
