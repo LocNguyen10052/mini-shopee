@@ -1,12 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './product.style.scss'
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
 import { addToCartAction } from '../../../store/cart-store/cart-action';
-
 
 function Product({ product }) {
     const dispatch = useDispatch();
@@ -19,16 +17,15 @@ function Product({ product }) {
         productName,
         productPrice,
         productSoldCount,
-        productTitle
+
     } = product
     const addCartDropBox = async (event) => {
-        const productID = product.ID
+        const productID = product.productID
         const userID = currentUser.email
-        await addToCartAction(dispatch, { productID, userID })
+        await addToCartAction(dispatch, { productID, productImage, productName, productPrice }, userID)
         alert("Add success " + productName)
     }
     return (
-        // <Link className="product-card" to={`/product/detail/${ID}`}>
         <Link className="product-card" >
             <img
                 src={productImage}

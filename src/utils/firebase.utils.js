@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider, RecaptchaVerifier, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, query, where, collection, getDocs, addDoc } from 'firebase/firestore';
-import { getDownloadURL, getStorage, list, listAll, ref, uploadBytes } from 'firebase/storage'
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { v4 } from "uuid";
 import { persistor } from "../store/store";
 
@@ -72,24 +71,24 @@ export const createUser = async (userAuth) => {
     }
     return userDoc;
 }
-
-
 export const createCategory = async (category, img) => {
-    const categoryFromDoc = await query(collection(db, "categories"), where("categoryName", "==", category.categoryName))
-    const querySnapshot = await getDocs(categoryFromDoc);
-    const categoryarray = querySnapshot.docs
-    if (categoryarray.length === 0) {
+    const categoryFromDoc = await query(collection(db, "categories"))
+    const categoryquerySnapshot = await getDocs(categoryFromDoc);
+    if (categoryquerySnapshot.empty) {
         const { categoryName, categoryImage, categoryTitle, categoryDescription } = category
         const createdAt = new Date()
         try {
             const imgRef = ref(storage, `files/${v4()}`)
             uploadBytes(imgRef, img, { contentType: 'image/png' }).then(async (snapshot) => {
                 await addDoc(collection(db, "categories"), {
-                    categoryName,
-                    createdAt,
-                    "categoryImage": snapshot.metadata.fullPath,
-                    categoryTitle,
-                    categoryDescription
+                    category: [{
+                        categoryName,
+                        createdAt,
+                        "categoryImage": snapshot.metadata.fullPath,
+                        categoryTitle,
+                        categoryDescription,
+                        "categoryID": v4()
+                    }]
                 })
             }).catch(() => {
                 return
@@ -100,38 +99,36 @@ export const createCategory = async (category, img) => {
         }
     }
     else {
-        alert("Catetegory đã tồn tại")
+        const categoryarray = categoryquerySnapshot.docs[0].data()
+        const { categoryName, categoryImage, categoryTitle, categoryDescription } = category
+        const createdAt = new Date()
+        const categoreDocumentReference = doc(db, "categories", categoryquerySnapshot.docs[0].id)
+        const imgRef = ref(storage, `files/${v4()}`)
+        uploadBytes(imgRef, img, { contentType: 'image/png' }).then(async (snapshot) => {
+            await setDoc(categoreDocumentReference, {
+                category: [...categoryarray.category, {
+                    categoryName,
+                    createdAt,
+                    "categoryImage": snapshot.metadata.fullPath,
+                    categoryTitle,
+                    categoryDescription,
+                    "categoryID": v4()
+                }]
+            })
+        }).catch((error) => {
+            console.log(error)
+        });
     }
 }
-
 export const listAllCategory = async () => {
-    const categoryFromDoc = await query(collection(db, "categories"));
-    const querySnapshot = await getDocs(categoryFromDoc);
-    const categoriesDTO = await Promise.all(querySnapshot.docs.map(async (category) => {
-        const categoryData = category.data();
-        const url = await getDownloadURL(ref(storage, `${categoryData.categoryImage}`));
-        categoryData.categoryImage = url;
-        categoryData.ID = category.id;
-        return categoryData;
+    const categoriesFromDoc = await query(collection(db, "categories"));
+    const categoriesquerySnapshot = await getDocs(categoriesFromDoc);
+    const categoriesData = categoriesquerySnapshot.docs[0].data().category
+    const categoriesDTO = await Promise.all(categoriesData.map(async (category) => {
+        const url = await getDownloadURL(ref(storage, `${category.categoryImage}`));
+        category.categoryImage = url;
+        category.ID = category.categoryID;
+        return category;
     }));
     return categoriesDTO;
-}
-
-export const createBrand = async (brand) => {
-    // const userDoc = doc(db, "categories", brand.uid)
-    // const userSnapShot = await getDoc(userDoc)
-    // if (await userSnapShot.exists) {
-    //     const { categoryName } = category
-    //     const createdAt = new Date()
-    //     const balance = 0
-    // }
-    // try {
-    //     await setDoc(userDoc, {
-    //         categoryName,
-    //         createdAt
-
-    //     })
-    // } catch (error) {
-
-    // }
 }

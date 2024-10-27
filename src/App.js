@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Navigate } from 'react-router'
+import { Routes, Route } from 'react-router'
 import Home from './utils/Home/home.component';
 import Directory from './component/directory/directory.component';
 import SignIn from './component/router/sign-in/sign-in.component';
@@ -11,19 +11,18 @@ import ListCategory from './component/category/listcategory/listcategory.compoen
 import ProductDetail from './component/product/productdetail/product-detail.component';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { createUser, listAllCategory, onStateAuthChangeListener } from './utils/firebase.utils';
+import { createUser, onStateAuthChangeListener } from './utils/firebase.utils';
 import { setCurrentUser } from './store/user-store/user-action';
-import { getListCategories, setCategories } from './store/category-store/category-action';
-import { getCart, getCartSnapShoot } from './utils/firebase.cart';
-import { getCartCartAction, setCart } from './store/cart-store/cart-action';
+import { getListCategories } from './store/category-store/category-action';
+import { CartSnapShoot, getCartSnapShoot } from './utils/firebase.cart';
+
 import Checkout from './component/Checkout/checkoutDirectory/checkout.component';
-import GannSquare from './component/test/test';
+
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
   }, [])
   useEffect(() => {
     const unsubscribe = onStateAuthChangeListener(async (user) => {
@@ -35,7 +34,6 @@ function App() {
         getCartSnapShoot(user.email, dispatch)
       }
     });
-
     const getList = async () => {
       await getListCategories(dispatch)
     }

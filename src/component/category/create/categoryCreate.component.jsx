@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import './categoryCreate.scss'
-import { createCategory, listAllCategory } from '../../../utils/firebase.utils'
+import { createCategory } from '../../../utils/firebase.utils'
 const defaulCategoryFields = {
     categoryName: "",
     categoryImage: "",
     categoryTitle: "",
     categoryDescription: ""
 }
-
 function CategoryCreate() {
     const [img, setImg] = useState('')
     const [category, setCatergory] = useState(defaulCategoryFields)
@@ -27,47 +26,44 @@ function CategoryCreate() {
     };
 
     return (
-        <div>
-            <form className="custom-form" onSubmit={handleSubmitCreateCategory}>
-                <input
-                    className="custom-input"
-                    type="text"
-                    required
-                    onChange={handleChange}
-                    name="categoryName"
-                    value={categoryName}
-                    placeholder='name'
-                />
-                <input
-                    className="file"
-                    type="file"
-                    required
-                    onChange={(e) => setImg(e.target.files[0])}
+        <form className="custom-form" onSubmit={handleSubmitCreateCategory}>
+            <input
+                className="custom-input"
+                type="text"
+                required
+                onChange={handleChange}
+                name="categoryName"
+                value={categoryName}
+                placeholder='name'
+            />
+            <input
+                className="file"
+                type="file"
+                required
+                onChange={(e) => setImg(e.target.files[0])}
 
-                    placeholder='image'
-                />
-                <input
-                    className="custom-input"
-                    type="text"
-                    required
-                    onChange={handleChange}
-                    name="categoryTitle"
-                    value={categoryTitle}
-                    placeholder='title'
-                />
-                <input
-                    className="custom-input"
-                    type="text"
-                    required
-                    onChange={handleChange}
-                    name="categoryDescription"
-                    value={categoryDescription}
-                    placeholder='description'
-                />
-                <button className="custom-button">Submit</button>
-            </form>
-
-        </div >
+                placeholder='image'
+            />
+            <input
+                className="custom-input"
+                type="text"
+                required
+                onChange={handleChange}
+                name="categoryTitle"
+                value={categoryTitle}
+                placeholder='title'
+            />
+            <input
+                className="custom-input"
+                type="text"
+                required
+                onChange={handleChange}
+                name="categoryDescription"
+                value={categoryDescription}
+                placeholder='description'
+            />
+            <button className="custom-button">Submit</button>
+        </form>
     );
 }
 

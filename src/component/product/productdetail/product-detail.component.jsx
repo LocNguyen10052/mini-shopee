@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { findAllProductByCategoryID, findProductByID } from '../../../utils/firebase.createproduct';
+import { findProductByID } from '../../../utils/firebase.createproduct';
 import './product-detal.style.scss'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectCategories } from '../../../store/category-store/category-selector';
-
 
 function ProductDetail() {
     const [product, setProduct] = useState('');

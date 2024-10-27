@@ -1,15 +1,12 @@
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './createproduct.style.scss'
 import { createProduct } from '../../../utils/firebase.createproduct';
-import { CategoriesContext } from '../../context/categories.context';
-import { listAllCategory } from '../../../utils/firebase.utils';
-import { v4 } from "uuid";
 import { useDispatch, useSelector } from 'react-redux';
 import city from './../../../asset/City.json';
 import { selectCategories } from '../../../store/category-store/category-selector';
-import { getListCategories, setCategories } from '../../../store/category-store/category-action';
-import { Button } from 'react-bootstrap';
+import { getListCategories } from '../../../store/category-store/category-action';
+import { selectCurrentUser } from '../../../store/user-store/user-seletor';
 
 const defaultProductType = {
     productClassificationID: '',
@@ -23,16 +20,11 @@ const defaulProductFields = {
     productLocation: "",
     productSoldCount: "",
     productPrice: ""
-
-
 }
 function CreateProduct() {
-
-
+    const currentUser = useSelector(selectCurrentUser)
     const [image, setImage] = useState(null);
-    const [productTypeCount, setProductTypeCount] = useState([])
     const dispatch = useDispatch();
-    const [toggle, setToggle] = useState(false)
     const [product, setProduct] = useState(defaulProductFields)
     const categoriesSelector = useSelector(selectCategories)
     const [categoyId, setCategoryID] = useState()
@@ -42,13 +34,9 @@ function CreateProduct() {
         productLocation,
         productSoldCount,
         productPrice,
-        categoryID
+
     } = product;
-    const {
-        productClassificationID,
-        productClassificationName,
-        productClassificationItem
-    } = defaultProductType;
+
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
     };
@@ -57,11 +45,9 @@ function CreateProduct() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(categoyId)
         try {
-            await createProduct(categoyId, product, image)
+            await createProduct(categoyId, product, image, currentUser.email)
             resetFormFields();
-
         } catch (error) {
             console.log(error)
         }
@@ -77,11 +63,10 @@ function CreateProduct() {
         getListCategories(dispatch)
     }, [])
     return (
-
         <form onSubmit={handleSubmit}>
             <div className="create-product-form">
                 <div>Thông tin cơ bản</div>
-                <input type="file" className='create-product-form_InputFile' name='file' onChange={handleImageChange} />
+                <input type="file" className='create-product-form_InputFile' name='file' onChange={handleImageChange} required />
                 <div className='create-product-form_input'>
                     <label className='create-product-form_input-label'>Tên sản phẩm</label>
                     <input type='text' className='create-product-form_input-input' name='productName' value={productName} onChange={handleInputChange}></input>

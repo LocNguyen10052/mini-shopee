@@ -6,17 +6,14 @@ import React from "react";
 
 export const setCart = (carts) =>
     createAction(CART_ACTIONS_TYPE.SET_CART, carts)
-export const addToCartAction = async (dispatch, data) => {
-    const { productID, userID } = data
-    await addTocart(productID, userID)
+export const addToCartAction = async (dispatch, data, userID) => {
+    await addTocart(data, userID)
 }
-export const deleteCartAction = async (dispatch, data) => {
-    const { productID, userID } = data
-    await deleteCart(productID, userID)
+export const deleteCartAction = async (dispatch, data, userID) => {
+    await deleteCart(data, userID)
 }
-export const removeCartAction = async (dispatch, data) => {
-    const { productID, userID } = data
-    await removeCart(productID, userID)
+export const removeCartAction = async (dispatch, data, userID) => {
+    await removeCart(data, userID)
 }
 export const getCartCartAction = async (dispatch, userEmail) => {
     await getCartSnapShoot(userEmail, dispatch)

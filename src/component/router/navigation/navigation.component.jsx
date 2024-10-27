@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './navigation.style.scss'
 import { UserContext } from '../../context/user.context';
@@ -6,18 +6,19 @@ import { ReactComponent as ShoppingIcon } from '../../../asset/shopping-bag.svg'
 import DropBoxCart from '../../dropboxcart/dropboxcart-component';
 import { signOutUser } from '../../../utils/firebase.utils';
 import { useSelector } from 'react-redux';
+import { onSnapshot } from 'firebase/firestore';
+import { selectCartItemsCount, selectCartItemsTotal } from '../../../store/cart-store/cart-selector';
 
 function Navigation() {
     const currentUser = useSelector((state) => state.user.currentUser)
     const [isCartOpen, setIsCartOpen] = useState(false);
-
+    const cartTotal = useSelector(selectCartItemsCount)
     const toggleIsCartOpen = () => {
         setIsCartOpen(!isCartOpen)
     }
 
     return (
         <Fragment>
-
             <div className='navigation-container'>
                 <div className='nav-bar-container'>
                     <ul className="nav-bar">
@@ -128,9 +129,8 @@ function Navigation() {
                 </div>
                 <div className='cart-icon-container' onClick={toggleIsCartOpen}>
                     <ShoppingIcon className='shopping-icon' />
-                    <span className='item-count'>0</span>
+                    <span className='item-count' style={{ color: 'white' }}>{cartTotal}</span>
                     {isCartOpen && <DropBoxCart />}
-
                 </div>
             </div>
 

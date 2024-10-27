@@ -6,4 +6,3 @@ export const selectCategories = createSelector([selectCategoriesReducer], (catel
     return catelogries
 })
 
-

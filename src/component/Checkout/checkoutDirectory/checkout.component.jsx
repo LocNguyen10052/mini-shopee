@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { selectCartReducer } from '../../../store/cart-store/cart-selector';
+import { selectCartItemsTotal, selectCartReducer } from '../../../store/cart-store/cart-selector';
 import './checkout.style.scss'
-import { Container } from 'react-bootstrap';
-import { addTocart, getCartSnapShoot } from '../../../utils/firebase.cart';
 import CartItemComponent from '../cartitem/cartItem.component';
 
 
 function Checkout() {
-
+    const cartsTotal = useSelector(selectCartItemsTotal)
     const carts = useSelector(selectCartReducer)
     const [total, setCartTotal] = useState()
     useEffect(() => {
@@ -21,7 +18,6 @@ function Checkout() {
     }, [total, carts])
 
     return (
-
         <div className='checkout-container'>
             <div className='checkout-header'>
                 <div className='header-block'>
@@ -31,7 +27,7 @@ function Checkout() {
                     <span>Description</span>
                 </div>
                 <div className='header-block'>
-                    <span>Quantity</span>
+                    <span>Quatity</span>
                 </div>
                 <div className='header-block'>
                     <span>Price</span>
@@ -46,10 +42,8 @@ function Checkout() {
                 ))}
             </div>
 
-            <div className='total'>TOTAL: ${total}</div>
+            <div className='total'>TOTAL: ${cartsTotal}</div>
         </div>
-
-
     );
 }
 

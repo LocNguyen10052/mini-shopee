@@ -46,14 +46,13 @@ const loggerMiddleware = (store) => (next) => (action) => {
 
     console.log('next state: ', store.getState());
 };
-const middleWares = [process.env.NODE_ENV === 'development' && loggerMiddleware].filter(
+const middleWares = [process.env.NODE_ENV === 'product' && loggerMiddleware].filter(
     Boolean
 );
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user', 'cart'],
-
+    blacklist: ['user', 'cart', 'product'],
 }
 const persistsReducer = persistReducer(persistConfig, rootReducer)
 const composeEnhancer = (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
