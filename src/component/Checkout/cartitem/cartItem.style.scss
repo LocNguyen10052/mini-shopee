@@ -17,19 +17,6 @@
         }
     }
 
-    .name {
-        display: -webkit-box;
-        /* Sử dụng box model */
-        -webkit-box-orient: vertical;
-        /* Định hướng chiều dọc cho box */
-        -webkit-line-clamp: 2;
-        /* Giới hạn số dòng hiển thị */
-        overflow: hidden;
-        /* Ẩn nội dung tràn */
-        text-overflow: ellipsis;
-        /* Thêm dấu '...' khi bị cắt */
-    }
-
     .name,
     .quantity,
     .price {
@@ -38,6 +25,7 @@
 
     .quantity {
         display: flex;
+        justify-content: center;
 
         .arrow {
             cursor: pointer;
@@ -49,7 +37,15 @@
     }
 
     .remove-button {
+        justify-content: center;
         padding-left: 12px;
         cursor: pointer;
     }
+}
+
+.arrow.disabled {
+    cursor: not-allowed;
+    /* Hiển thị trạng thái không thể click */
+    color: rgba(128, 128, 128, 0.397);
+    /* Màu tô đen khi bị disable */
 }

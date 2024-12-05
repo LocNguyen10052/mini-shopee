@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, query, where, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, query, collection, getDocs, addDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { v4 } from "uuid";
 import { persistor } from "../store/store";
@@ -10,13 +10,13 @@ import { persistor } from "../store/store";
 const firebaseConfig = {
     apiKey: "AIzaSyAdWEGcJ-IWyPC9uLf3ZKraXmnW9bbWccI",
     authDomain: "mini-shopee-8e03b.firebaseapp.com",
+    databaseURL: "https://mini-shopee-8e03b-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "mini-shopee-8e03b",
     storageBucket: "mini-shopee-8e03b.appspot.com",
     messagingSenderId: "929631891294",
     appId: "1:929631891294:web:57e65643c1dfb8cdcae9cf",
     measurementId: "G-SYD8JSQFRJ"
 };
-
 
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider;
@@ -26,7 +26,7 @@ provider.setCustomParameters({
 export const db = getFirestore();
 export const storage = getStorage(app);
 export const auth = new getAuth();
-// sign in with pop up
+
 export const signInWithGoogleAccountPopUp = async () => signInWithPopup(auth, provider)
 
 export const signOutUser = async () => {
@@ -69,13 +69,13 @@ export const createUser = async (userAuth) => {
 
         }
     }
-    return userDoc;
+    return userSnapShot;
 }
 export const createCategory = async (category, img) => {
     const categoryFromDoc = await query(collection(db, "categories"))
     const categoryquerySnapshot = await getDocs(categoryFromDoc);
     if (categoryquerySnapshot.empty) {
-        const { categoryName, categoryImage, categoryTitle, categoryDescription } = category
+        const { categoryName, categoryTitle, categoryDescription } = category
         const createdAt = new Date()
         try {
             const imgRef = ref(storage, `files/${v4()}`)
@@ -100,7 +100,7 @@ export const createCategory = async (category, img) => {
     }
     else {
         const categoryarray = categoryquerySnapshot.docs[0].data()
-        const { categoryName, categoryImage, categoryTitle, categoryDescription } = category
+        const { categoryName, categoryTitle, categoryDescription } = category
         const createdAt = new Date()
         const categoreDocumentReference = doc(db, "categories", categoryquerySnapshot.docs[0].id)
         const imgRef = ref(storage, `files/${v4()}`)
@@ -132,3 +132,15 @@ export const listAllCategory = async () => {
     }));
     return categoriesDTO;
 }
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(
+            auth,
+            (userAuth) => {
+                unsubscribe();
+                resolve(userAuth);
+            },
+            reject
+        );
+    });
+};

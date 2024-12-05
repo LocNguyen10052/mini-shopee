@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
 import './sign-up.style.scss';
 import Header from '../../Banner/HeaderSign';
-import { Col, Container, Placeholder, Row } from 'react-bootstrap';
-import { createAuthUserWithEmailAndPassword, createCategory, createUser, signInAuthUserWithEmailAndPassword, signInWithGoogleAccountPopUp } from '../../../utils/firebase.utils';
+import { Col, Container, Row } from 'react-bootstrap';
+import { createAuthUserWithEmailAndPassword, createUser } from '../../../utils/firebase.utils';
 import { UserContext } from '../../context/user.context';
+import { useDispatch } from 'react-redux';
+import { googleSignInStart } from '../../../store/user-store/user-action';
 const defaultFormFields = {
     displayName: '',
     email: '',
@@ -14,13 +16,13 @@ const SignUp = () => {
     const [userFields, setUserFields] = useState(defaultFormFields)
     const { displayName, email, password, confirmPassword } = userFields;
     const { setUserContext } = useContext(UserContext)
+    const dispatch = useDispatch()
     const signInWithPopUp = async () => {
-        const { user } = await signInWithGoogleAccountPopUp()
-        const userCreate = await createUser(user)
-    }
-    const signInWithEmailPasssword = async () => {
-        const { user } = await signInAuthUserWithEmailAndPassword()
-        const userCreate = await createUser(user)
+        try {
+            dispatch(googleSignInStart())
+        } catch (error) {
+            console.log(error)
+        }
     }
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -28,7 +30,7 @@ const SignUp = () => {
     }
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (password != confirmPassword) {
+        if (password !== confirmPassword) {
             alert("Mật khẩu không khớp");
         }
         else {
@@ -66,7 +68,7 @@ const SignUp = () => {
                                     <button className="social-button facebook">Facebook</button>
                                     <button className="social-button google" onClick={signInWithPopUp}>Google</button>
                                 </div>
-                                <p>Bạn đã có tài khoản? <a href="/">Đăng Ký</a></p>
+                                <p>Bạn đã có tài khoản? <a href="/signIn">Đăng Nhập</a></p>
                             </form>
                         </Col>
                     </Row>

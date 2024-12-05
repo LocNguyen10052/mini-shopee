@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 
 function DropBoxCart() {
     const carts = useSelector(selectCartReducer)
+
     return (
         <div className='cart-dropdown-container'>
             <div className='cart-items'>

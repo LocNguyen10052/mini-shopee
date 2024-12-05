@@ -14,6 +14,5 @@ export const selectCartItemsTotal = createSelector([selectCartReducer], (carts) 
 
         return total + productPrice * quality
     }, 0)
-
     return cartTotal
 })

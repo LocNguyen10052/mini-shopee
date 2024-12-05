@@ -1,14 +1,18 @@
-import { listAllCategory } from "../../utils/firebase.utils";
-
-export const CATEGORY_ACTIONS_TYPE = {
-    SET_CATEGORIES: 'SET_CATEGORIES',
-    GET_CATEGORIES: 'GET_CATEGORIES'
-}
+import { createSlice } from "@reduxjs/toolkit";
+import { CATEGORIES_TYPE_ACTIONS } from "./Category-types";
 
 const INITIAL_CATEGORIES = {
     categoriesMap: []
 }
 
+// export const categoriySlice = createSlice({
+//     name: 'categories',
+//     initialState: INITIAL_CATEGORIES,
+//     setCategories(state, action) {
+
+//     }
+// })
+// export const { setCategories } = categoriySlice.actions
 export const categoryReducer = (
     state = INITIAL_CATEGORIES,
     action = {}
@@ -16,8 +20,10 @@ export const categoryReducer = (
     const { type, payload } = action;
 
     switch (type) {
-        case CATEGORY_ACTIONS_TYPE.SET_CATEGORIES:
-            return { ...state, categoriesMap: payload };
+        case CATEGORIES_TYPE_ACTIONS.FETCH_CATEGORIES_START:
+            return { ...state, isLoading: true };
+        case CATEGORIES_TYPE_ACTIONS.FETCH_CATEGORIES_SUCCESS:
+            return { ...state, isLoading: false, categoriesMap: payload };
         default:
             return state;
     }

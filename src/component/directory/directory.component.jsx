@@ -1,19 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, } from 'react';
 import './directory.style.scss'
-import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import Category from '../category/category/category.component';
 import Slider from "react-slick"
 import ButtonCuttom from '../button/button.component';
-import { createUser, listAllCategory, onStateAuthChangeListener } from '../../utils/firebase.utils';
-import { getDownloadURL } from 'firebase/storage';
-import { CategoriesContext } from '../context/categories.context';
-import { UserContext } from '../context/user.context';
-import { Outlet, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, getListCategories, setCategories } from '../../store/category-store/category-action';
-import { CATEGORY_ACTIONS_TYPE } from '../../store/category-store/category-reducer';
-import { selectCategoriesReducer } from '../../store/category-store/category-selector';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectCategories, selectIsloading } from '../../store/category-store/category-selector';
+import Spinner from '../../Spinner/spinner.component';
+
 
 // const categories = [
 //     {
@@ -69,10 +64,10 @@ import { selectCategoriesReducer } from '../../store/category-store/category-sel
 
 // ]
 
-function Directory(props) {
+function Directory() {
 
-    const currentCategories = useSelector(selectCategoriesReducer)
-    const dispatch = useDispatch()
+    const currentCategories = useSelector(selectCategories)
+    const isLoading = useSelector(selectIsloading)
 
     useEffect(() => {
 
@@ -91,19 +86,26 @@ function Directory(props) {
 
     return (
         <Container>
-            <Slider {...settings}>
-                {
-                    currentCategories.map((category) => (
 
-                        < div className="Category" xs="auto" key={category.ID} >
-                            <Link className="nav-link" to={`/category/${category.ID}`}>
-                                <Category category={category}></Category>
-                            </Link>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <Slider {...settings}>
+                    {
+                        currentCategories.map((category) => (
 
-                        </div>
-                    ))
-                }
-            </Slider>
+                            < div className="Category" xs="auto" key={category.ID} >
+                                <Link className="nav-link" to={`/category/${category.ID}`}>
+                                    <Category category={category}></Category>
+                                </Link>
+
+                            </div>
+                        ))
+                    }
+                </Slider>
+
+
+            )}
         </Container >
 
     );

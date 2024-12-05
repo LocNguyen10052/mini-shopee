@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import './createproduct.style.scss'
 import { createProduct } from '../../../utils/firebase.createproduct';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import city from './../../../asset/City.json';
 import { selectCategories } from '../../../store/category-store/category-selector';
-import { getListCategories } from '../../../store/category-store/category-action';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
 
 const defaultProductType = {
@@ -24,7 +23,6 @@ const defaulProductFields = {
 function CreateProduct() {
     const currentUser = useSelector(selectCurrentUser)
     const [image, setImage] = useState(null);
-    const dispatch = useDispatch();
     const [product, setProduct] = useState(defaulProductFields)
     const categoriesSelector = useSelector(selectCategories)
     const [categoyId, setCategoryID] = useState()
@@ -60,7 +58,7 @@ function CreateProduct() {
         setProduct({ ...product, [name]: value });
     }
     useEffect(() => {
-        getListCategories(dispatch)
+
     }, [])
     return (
         <form onSubmit={handleSubmit}>

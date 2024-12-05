@@ -18,7 +18,7 @@ function ListCategory() {
         <Container>
             <Row>
                 {products.map((product) => (
-                    <Col key={product.ID} >
+                    <Col key={product.productID} >
                         < Product product={product}></Product>
 
                     </Col>

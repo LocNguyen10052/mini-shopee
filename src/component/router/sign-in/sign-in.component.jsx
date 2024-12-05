@@ -1,35 +1,24 @@
-import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import './sign-in.style.scss'
 import Header from '../../Banner/HeaderSign';
 import { Col, Container, Row } from 'react-bootstrap';
-
-import { UserContext } from '../../context/user.context';
-import { signInAuthUserWithEmailAndPassword } from '../../../utils/firebase.utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { emailSignInStart, googleSignInStart } from '../../../store/user-store/user-action';
+import { selectLoadedUser } from '../../../store/user-store/user-seletor';
 
 const userDefaultForm = {
     email: '',
     password: ''
 }
-function SignIn(props) {
-    const [userForm, setUserForm] = useState(userDefaultForm)
-    const { email, password } = userForm
-    const { setCurrentUser } = useContext(UserContext)
-    const resetFormFields = () => {
-        setUserForm(userDefaultForm);
-    };
+function SignIn() {
+    const [userForm, setUserForm] = useState(userDefaultForm);
+    const { email, password } = userForm;
+    const dispatch = useDispatch();
+    const isUserLoaded = useSelector(selectLoadedUser);
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         try {
-            const { user } = await signInAuthUserWithEmailAndPassword(
-                email,
-                password
-            );
-            setCurrentUser(user)
-            resetFormFields();
-            alert('Login thanh cong');
-
+            dispatch(emailSignInStart(email, password));
         } catch (error) {
             switch (error.code) {
                 case 'auth/invalid-credential':
@@ -43,13 +32,26 @@ function SignIn(props) {
             }
         }
     }
+    const handleSignInWithGoogle = async (event) => {
+        event.preventDefault();
+        try {
+            dispatch(googleSignInStart());
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const handleChange = (event) => {
         const { name, value } = event.target;
         setUserForm({ ...userForm, [name]: value })
     }
+    useEffect(() => {
+        console.log(isUserLoaded)
+        if (isUserLoaded) {
+            window.location.href = '/';
+        }
+    }, [isUserLoaded])
     return (
         <div>
-            {console.log("hit")}
             <Header props={{ name: "Đăng nhập" }}></Header>
             <div className="login-container">
                 <Container className="justify-content-center flex-column d-flex ">
@@ -73,9 +75,9 @@ function SignIn(props) {
                                 <div className="login-social">
                                     <p>HOẶC</p>
                                     <button className="social-button facebook">Facebook</button>
-                                    <button className="social-button google">Google</button>
+                                    <button className="social-button google" type='button' onClick={handleSignInWithGoogle}>Google</button>
                                 </div>
-                                <p>Bạn mới biết đến Shopee? <a href="/">Đăng ký</a></p>
+                                <p>Bạn mới biết đến Shopee? <a href="/signUp">Đăng ký</a></p>
                             </form>
                         </Col>
                     </Row>

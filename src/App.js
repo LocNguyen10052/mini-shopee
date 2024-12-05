@@ -7,39 +7,29 @@ import SignUp from './component/router/sign-up/sign-up.component';
 import CategoryCreate from './component/category/create/categoryCreate.component';
 import CreateProduct from './component/product/createproduct/createproduct.component';
 import ListCategory from './component/category/listcategory/listcategory.compoent';
-
 import ProductDetail from './component/product/productdetail/product-detail.component';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { createUser, onStateAuthChangeListener } from './utils/firebase.utils';
-import { setCurrentUser } from './store/user-store/user-action';
-import { getListCategories } from './store/category-store/category-action';
-import { CartSnapShoot, getCartSnapShoot } from './utils/firebase.cart';
-
+import { checkUserSession } from './store/user-store/user-action';
+import { getCartSnapShoot } from './utils/firebase.cart';
 import Checkout from './component/Checkout/checkoutDirectory/checkout.component';
+import { fetchCategoriesStart } from './store/category-store/category-action';
+import { selectCurrentUser, selectLoadedUser } from './store/user-store/user-seletor';
 
 
 function App() {
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const userIsLoaded = useSelector(selectLoadedUser);
+  useEffect(() => {
+    dispatch(checkUserSession());
+    dispatch(fetchCategoriesStart());
 
-  useEffect(() => {
-  }, [])
-  useEffect(() => {
-    const unsubscribe = onStateAuthChangeListener(async (user) => {
-      if (user) {
-        createUser(user);
-      }
-      dispatch(setCurrentUser(user));
-      if (user) {
-        getCartSnapShoot(user.email, dispatch)
-      }
-    });
-    const getList = async () => {
-      await getListCategories(dispatch)
+    if (userIsLoaded) {
+      const { email } = currentUser
+      getCartSnapShoot(email, dispatch);
     }
-    getList()
-    return unsubscribe;
-  }, [dispatch]);
+  }, [dispatch, userIsLoaded]);
   return (
     <Routes>
       <Route path='/' element={<Home></Home>}>
@@ -57,5 +47,4 @@ function App() {
 
   );
 }
-
 export default App;

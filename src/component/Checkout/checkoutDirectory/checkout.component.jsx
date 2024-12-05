@@ -10,11 +10,7 @@ function Checkout() {
     const carts = useSelector(selectCartReducer)
     const [total, setCartTotal] = useState()
     useEffect(() => {
-        const newCartTotal = carts.reduce(
-            (total, cartItem) => total + cartItem.quanlity * cartItem.productPrice,
-            0
-        );
-        setCartTotal(newCartTotal);
+
     }, [total, carts])
 
     return (
@@ -36,14 +32,12 @@ function Checkout() {
                     <span>Remove</span>
                 </div>
             </div>
-            <div>
-                {carts.map((cart) => (
-                    <CartItemComponent cart={cart}></CartItemComponent>
-                ))}
-            </div>
-
+            {carts.map((cart, index) => (
+                < CartItemComponent key={cart.cartID} cart={cart} ></CartItemComponent>
+            ))
+            }
             <div className='total'>TOTAL: ${cartsTotal}</div>
-        </div>
+        </div >
     );
 }
 
