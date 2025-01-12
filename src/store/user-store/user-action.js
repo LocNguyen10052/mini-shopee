@@ -5,14 +5,21 @@ import { USER_ACTION_TYPES } from "./user-reducer";
 
 export const setCurrentUser = (user) =>
     createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user);
+
 export const checkUserSession = () =>
     createAction(USER_ACTION_TYPES.CHECK_USER_SESSION);
+
+export const checkAdminSession = () =>
+    createAction(USER_ACTION_TYPES.CHECK_USER_SESSION_ADMIN);
 
 export const googleSignInStart = () =>
     createAction(USER_ACTION_TYPES.GOOGLE_SIGN_IN_START);
 
 export const emailSignInStart = (email, password) =>
     createAction(USER_ACTION_TYPES.EMAIL_SIGN_IN_START, { email, password });
+
+export const emailSignInStartAdmin = (email, password) =>
+    createAction(USER_ACTION_TYPES.EMAIL_SIGN_IN_START_ADMIN, { email, password });
 
 export const signInSuccess = (user) =>
     createAction(USER_ACTION_TYPES.SIGN_IN_SUCCESS, user);

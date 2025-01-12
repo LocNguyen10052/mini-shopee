@@ -8,17 +8,18 @@ import { persistor } from "../store/store";
 
 //Firebase config
 const firebaseConfig = {
-    apiKey: "AIzaSyAdWEGcJ-IWyPC9uLf3ZKraXmnW9bbWccI",
-    authDomain: "mini-shopee-8e03b.firebaseapp.com",
-    databaseURL: "https://mini-shopee-8e03b-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "mini-shopee-8e03b",
-    storageBucket: "mini-shopee-8e03b.appspot.com",
-    messagingSenderId: "929631891294",
-    appId: "1:929631891294:web:57e65643c1dfb8cdcae9cf",
-    measurementId: "G-SYD8JSQFRJ"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+
+export const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider;
 provider.setCustomParameters({
     prompt: "select_account"
@@ -71,6 +72,32 @@ export const createUser = async (userAuth) => {
     }
     return userSnapShot;
 }
+
+export const createAdmin = async (adminAuth) => {
+    const userDoc = doc(db, "admin", adminAuth.uid)
+    const userSnapShot = await getDoc(userDoc)
+    return userSnapShot;
+}
+
+export const signInAuthUserWithEmailAndPasswordAdmin = async (email, password) => {
+    if (!email || !password) return;
+    const admin = await signInWithEmailAndPassword(auth, email, password);
+    const userDoc = await getDoc(doc(db, "admin", admin.user.uid));
+    try {
+        if (userDoc.exists()) {
+            const role = userDoc.data().role;
+            if (role === "admin") {
+                alert("Đăng nhập thành công (Admin)");
+                return admin;
+            } else {
+                alert("Bạn không có quyền truy cập");
+            }
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
+};
+
 export const createCategory = async (category, img) => {
     const categoryFromDoc = await query(collection(db, "categories"))
     const categoryquerySnapshot = await getDocs(categoryFromDoc);

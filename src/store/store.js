@@ -1,6 +1,4 @@
 import { compose, legacy_createStore as createStore, applyMiddleware } from 'redux'
-import { configureStore } from '@reduxjs/toolkit';
-
 import { rootReducer } from './root-reducer';
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from 'redux-persist';
@@ -16,7 +14,7 @@ const middleWares = [process.env.NODE_ENV === 'development' && loggerMiddleware,
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user', 'carts', 'categories'],
+    blacklist: ['user', 'carts', 'categories', 'products'],
 
 }
 const composeEnhancer = (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;

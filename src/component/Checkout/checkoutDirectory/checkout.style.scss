@@ -15,17 +15,89 @@
 
         .header-block {
             text-transform: capitalize;
-            width: 23%;
+            flex: 1;
+            /* Dùng flex để các cột tự điều chỉnh kích thước đồng đều */
+            text-align: center;
 
             &:last-child {
-                width: 8%;
+                flex: 0.5;
+                /* Cột cuối cùng nhỏ hơn */
             }
         }
     }
+}
 
-    .total {
-        margin-top: 30px;
-        margin-left: auto;
-        font-size: 36px;
+.checkout-item-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid darkgrey;
+    padding: 15px 0;
+    font-size: 15px;
+
+    .image-container {
+        flex: 1;
+        text-align: center;
+
+        img {
+            width: 80%;
+            /* Điều chỉnh kích thước ảnh để không quá lớn */
+            height: auto;
+        }
+    }
+
+    .name,
+    .quantity,
+    .price {
+        flex: 1;
+        /* Đảm bảo các cột có kích thước bằng nhau */
+        text-align: center;
+    }
+
+    .quantity {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .arrow {
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .value {
+            margin: 0 10px;
+        }
+    }
+
+    .remove-button {
+        flex: 0.5;
+        /* Kích thước cột Remove nhỏ hơn */
+        text-align: center;
+        cursor: pointer;
+    }
+}
+
+.coupon-container {
+    display: flex;
+    /* Sử dụng flexbox */
+    justify-content: flex-end;
+    /* Đẩy nội dung sang bên phải */
+    margin-top: 20px;
+    /* Thêm khoảng cách phía trên nếu cần */
+    width: 100%;
+    /* Đảm bảo chiều rộng đủ lớn */
+
+    form {
+        display: flex;
+        /* Bố cục ngang */
+        align-items: center;
+        /* Căn giữa theo trục dọc */
+        gap: 10px;
+        /* Khoảng cách giữa các phần tử */
+    }
+
+    input {
+        width: 200px;
+        /* Đặt chiều rộng cố định cho ô input */
     }
 }

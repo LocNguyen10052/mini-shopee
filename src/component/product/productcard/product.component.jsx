@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './product.style.scss'
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
-import { createCartStart } from '../../../store/cart-store/cart-action';
+import { addToCartAction, createCartStart } from '../../../store/cart-store/cart-action';
 
 function Product({ product }) {
-    const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser)
+    const [isProcessing, setIsProcessing] = useState(false);
     const {
         productImage,
         productLocation,
@@ -18,11 +18,26 @@ function Product({ product }) {
 
     } = product
     const addCartDropBox = async (event) => {
-        const productID = product.productID
-        const userID = currentUser.email
-        dispatch(createCartStart(productID, userID))
-    }
-    return (
+        if (currentUser != null) {
+            if (isProcessing) {
+                console.log("Đang xử lý, vui lòng chờ...");
+                return;
+            }
+            setIsProcessing(true);
+            const productID = product.productID;
+            const userID = currentUser.email;
+            try {
+                const create = await addToCartAction(productID, userID);
+                console.log("Sản phẩm đã được thêm vào giỏ hàng:", create);
+            } catch (error) {
+                console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+            } finally {
+                setIsProcessing(false);
+            }
+        } else {
+            window.location.href = "/signIn";
+        }
+    }; return (
         <Link className="product-card" >
             <img
                 src={productImage}

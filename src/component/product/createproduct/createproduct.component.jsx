@@ -1,115 +1,261 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './createproduct.style.scss'
 import { createProduct } from '../../../utils/firebase.createproduct';
 import { useSelector } from 'react-redux';
-import city from './../../../asset/City.json';
 import { selectCategories } from '../../../store/category-store/category-selector';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
+import { Button, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import city from './../../../asset/City.json';
 
-const defaultProductType = {
-    productClassificationID: '',
-    productClassificationName: '',
-    productClassificationItem: []
-}
+
 const defaulProductFields = {
     productName: "",
-    productImage: "",
     productTitle: "",
+    productImage: "",
     productLocation: "",
     productSoldCount: "",
-    productPrice: ""
+    productPrice: "",
+    categoryID: null
 }
+const normFile = (e) => {
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e?.fileList;
+};
 function CreateProduct() {
-    const currentUser = useSelector(selectCurrentUser)
-    const [image, setImage] = useState(null);
-    const [product, setProduct] = useState(defaulProductFields)
-    const categoriesSelector = useSelector(selectCategories)
-    const [categoyId, setCategoryID] = useState()
-    const {
-        productName,
-        productTitle,
-        productLocation,
-        productSoldCount,
-        productPrice,
+    const currentUser = useSelector(selectCurrentUser);
+    const [product, setProduct] = useState(defaulProductFields);
+    const [fileList, setFileList] = useState('');
+    const categoriesSelector = useSelector(selectCategories);
+    const [form] = Form.useForm();
 
-    } = product;
+    const handleFileChange = ({ file: newFile }) => {
+        setFileList(newFile); // Cập nhật danh sách file
+    };
 
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
-    };
-    const resetFormFields = () => {
-        setProduct(defaulProductFields);
-    };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
-            await createProduct(categoyId, product, image, currentUser.email)
-            resetFormFields();
-        } catch (error) {
-            console.log(error)
-        }
+            await createProduct(product, fileList)
+            form.resetFields();
+            setFileList([]);
 
+
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
     };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-
         setProduct({ ...product, [name]: value });
     }
-    useEffect(() => {
 
-    }, [])
+    const handleSelectChange = (value, option) => {
+        const name = option.props.name;
+        setProduct({ ...product, [name]: value });
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="create-product-form">
-                <div>Thông tin cơ bản</div>
-                <input type="file" className='create-product-form_InputFile' name='file' onChange={handleImageChange} required />
-                <div className='create-product-form_input'>
-                    <label className='create-product-form_input-label'>Tên sản phẩm</label>
-                    <input type='text' className='create-product-form_input-input' name='productName' value={productName} onChange={handleInputChange}></input>
-                </div>
-                <div className='create-product-form_input'>
-                    <label className='create-product-form_input-label'>Mô tả sản phẩm</label>
-                    <textarea className='create-product-form_input-input inputDescription' rows="10" cols="50" placeholder="Nhập đoạn văn tại đây" name='productTitle' value={productTitle} onChange={handleInputChange}></textarea>
-                </div>
-                <div className="create-product-form_input">
-                    <label htmlFor="category-select">Chọn thể loại:</label>
-                    <select id="category-select" onChange={(e) => (setCategoryID(e.target.value))}>
-                        <option value="">-- Chọn thể loại --</option>
-                        {categoriesSelector && categoriesSelector.map((category) => (
-                            <option key={category.ID} value={category.ID}>
-                                {category.categoryName}
-                            </option>
+        <>
+            {console.log(fileList)}
+            <Form
+                form={form}
+                labelCol={{
+                    span: 12,
+                }}
+                wrapperCol={{
+                    span: 12,
+                }}
+                style={{
+                    maxWidth: 600,
+                }}
+                layout="horizontal"
+                onFinish={handleSubmit}
+                initialValues={defaulProductFields}
+            >
+                {/* Loại sản phẩm */}
+                <Form.Item
+                    label="Loại sản phẩm"
+                    name="categoryID"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng chọn loại sản phẩm!",
+                        },
+                    ]}
+                >
+                    <Select
+                        placeholder="Chọn loại sản phẩm"
+                        style={{
+                            width: 220,
+                        }}
+                        onChange={(value) =>
+                            handleSelectChange(value, { props: { name: "categoryID" } })
+                        }
+                    >
+                        {categoriesSelector.map((item) => (
+                            <Select.Option key={item.ID} value={item.ID}>
+                                {item.categoryName}
+                            </Select.Option>
                         ))}
-                    </select>
-                </div>
-            </div>
-            <div className="create-product-form">
-                <div>Thông tin hàng bán</div>
-                <div className='create-product-form_input'>
-                    <label className='create-product-form_input-label'>Giá</label>
-                    <input type='number' className='create-product-form_input-input' name='productPrice' value={productPrice} onChange={handleInputChange}></input>
-                </div>
-                <div className='create-product-form_input'>
-                    <label className='create-product-form_input-label' >Kho hàng</label>
-                    <input className='create-product-form_input-input' name='productSoldCount' value={productSoldCount} onChange={handleInputChange}></input>
-                </div>
-                <div className='create-product-form_input'>
-                    <label className='create-product-form_input-label' >Địa chỉ</label>
-                    <select id="category-select" placeholder="Chọn tỉnh thành..." value={productLocation} name='productLocation' onChange={handleInputChange}>
-                        <option>-- Chọn thể loại --</option>
-                        {city && city.map((city) => (
-                            <option key={city.id} >
-                                {city.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                    </Select>
+                </Form.Item>
 
-            </div>
-            <button>Create</button>
-        </form >
+                {/* Tên sản phẩm */}
+                <Form.Item
+                    label="Tên Sản Phẩm"
+                    name="productName"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng nhập tên sản phẩm!",
+                        },
+                    ]}
+                >
+                    <Input
+                        placeholder="Nhập tên sản phẩm"
+                        onChange={handleInputChange}
+                        name="productName"
+                    />
+                </Form.Item>
+
+                {/* Mô tả sản phẩm */}
+                <Form.Item
+                    label="Mô tả sản phẩm"
+                    name="productTitle"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng nhập mô tả sản phẩm!",
+                        },
+                    ]}
+                >
+                    <Input.TextArea
+                        placeholder="Nhập mô tả sản phẩm"
+                        name="productTitle"
+                        onChange={handleInputChange}
+                        showCount
+                        maxLength={100}
+                        style={{
+                            height: 120,
+                            resize: "none",
+                        }}
+                    />
+                </Form.Item>
+
+                {/* Upload */}
+                <Form.Item
+                    label="Upload"
+                    name="upload"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng tải lên hình ảnh!",
+                        },
+                    ]}
+                >
+                    <Upload
+                        listType="picture-card"
+                        fileList={fileList} // Kết nối trạng thái fileList
+                        onChange={handleFileChange} // Cập nhật trạng thái
+                        beforeUpload={() => false} // Không tự động upload
+                    >
+                        <button
+                            style={{
+                                border: 0,
+                                background: "none",
+                            }}
+                            type="button"
+                        >
+                            <PlusOutlined />
+                            <div style={{ marginTop: 8 }}>Upload</div>
+                        </button>
+                    </Upload>
+                </Form.Item>
+
+
+                {/* Số lượng sản phẩm */}
+                <Form.Item
+                    label="Số lượng sản phẩm"
+                    name="productSoldCount"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng nhập số lượng sản phẩm!",
+                        },
+                    ]}
+                >
+                    <Input
+                        type="number"
+                        placeholder="Nhập số lượng sản phẩm"
+                        onChange={handleInputChange}
+                        name="productSoldCount"
+                    />
+                </Form.Item>
+
+                {/* Giá tiền */}
+                <Form.Item
+                    label="Giá tiền"
+                    name="productPrice"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng nhập giá tiền!",
+                        },
+                    ]}
+                >
+                    <InputNumber
+                        prefix="VND"
+                        addonAfter={<SettingOutlined />}
+                        placeholder="Nhập giá tiền"
+                        style={{
+                            width: "100%",
+                        }}
+                        onChange={(value) =>
+                            handleSelectChange(value, { props: { name: "productPrice" } })
+                        }
+                        name="productPrice"
+                    />
+                </Form.Item>
+
+                {/* Địa chỉ */}
+                <Form.Item
+                    label="Địa chỉ"
+                    name="productLocation"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Vui lòng chọn địa chỉ!",
+                        },
+                    ]}
+                >
+                    <Select
+                        placeholder="Chọn tỉnh thành"
+                        style={{
+                            width: 220,
+                        }}
+                        options={city}
+                        onChange={(value) =>
+                            handleSelectChange(value, { props: { name: "productLocation" } })
+                        }
+                        name="productLocation"
+                    />
+                </Form.Item>
+
+                {/* Nút Submit */}
+                <Form.Item wrapperCol={{ offset: 12, span: 12 }}>
+                    <Button type="primary" htmlType="submit">
+                        Tạo sản phẩm
+                    </Button>
+                </Form.Item>
+            </Form>
+        </>
+
     );
 }
 

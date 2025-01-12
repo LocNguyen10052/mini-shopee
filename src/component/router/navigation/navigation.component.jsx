@@ -1,22 +1,46 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './navigation.style.scss'
 import { ReactComponent as ShoppingIcon } from '../../../asset/shopping-bag.svg'
 import DropBoxCart from '../../dropboxcart/dropboxcart-component';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCartItemsCount } from '../../../store/cart-store/cart-selector';
+import { selectCartItemsCount, selectProductID } from '../../../store/cart-store/cart-selector';
 import { signOutStart } from '../../../store/user-store/user-action';
-import { selectLoadedUser } from '../../../store/user-store/user-seletor';
+import { selectCurrentUser, selectLoadedUser } from '../../../store/user-store/user-seletor';
+import { getProductDataCartSnapShot, unSnapshotCart } from '../../../utils/firebase.cart';
+
 
 function Navigation() {
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.user.currentUser);
+    const currentUser = useSelector(selectCurrentUser);
+    const userIsLoaded = useSelector(selectLoadedUser);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const cartTotal = useSelector(selectCartItemsCount);
-    const userIsLoaded = useSelector(selectLoadedUser)
+    const productIDCartArray = useSelector(selectProductID);
+
+
     const toggleIsCartOpen = () => {
         setIsCartOpen(!isCartOpen);
     }
+
+    const fetchProductCartData = async () => {
+        if (!productIDCartArray.empty) {
+            // const productCartData = await getProductDataCart(productIDCartArray);
+            // dispatch(setProductCartData(productCartData))
+            getProductDataCartSnapShot(productIDCartArray, dispatch)
+        }
+    }
+    useEffect(() => {
+        if (productIDCartArray.length > 0) {
+            fetchProductCartData();
+        }
+    }, [productIDCartArray, dispatch])
+
+    useEffect(() => {
+        return () => {
+            unSnapshotCart();
+        };
+    }, []);
     const signOutUser = () => dispatch(signOutStart());
     return (
         <Fragment>

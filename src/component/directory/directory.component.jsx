@@ -69,9 +69,6 @@ function Directory() {
     const currentCategories = useSelector(selectCategories)
     const isLoading = useSelector(selectIsloading)
 
-    useEffect(() => {
-
-    }, [])
     const settings = {
         dots: false,
         infinite: false,
