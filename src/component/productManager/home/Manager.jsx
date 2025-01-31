@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectorProduct } from '../../../store/product-store/product-selector';
 import { Table, Modal, Form, Input, Button, Select, Upload } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { editProduct, subscribeToProducts, unSnapshotProduct } from '../../../utils/firebase.createproduct';
+import { editProduct, unSnapshotProduct } from '../../../utils/firebase.createproduct';
 import { selectCategories } from '../../../store/category-store/category-selector';
 import city from './../../../asset/City.json';
-
 
 
 function Manager() {
@@ -15,7 +13,6 @@ function Manager() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const categoriesSelector = useSelector(selectCategories);
-    const dispatch = useDispatch();
     // Xử lý khi nhấn nút Save
     const handleSave = async (editingProduct) => {
         await editProduct(editingProduct);
@@ -32,7 +29,12 @@ function Manager() {
 
     const columns = [
         {
-            title: 'Product Name',
+            title: 'Mã ID',
+            dataIndex: 'productID',
+            key: 'productID',
+        },
+        {
+            title: 'Tên sản phẩm',
             dataIndex: 'productName',
             key: 'productName',
         },

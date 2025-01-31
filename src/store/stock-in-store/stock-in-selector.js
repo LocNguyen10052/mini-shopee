@@ -1,0 +1,1 @@
+export const selectorStockIn = (state) => state.stockIns.stockIns

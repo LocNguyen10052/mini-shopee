@@ -18,67 +18,99 @@ function CartItem({ cart, ordered }) {
     };
 
     return (
-        <div className='checkout-item-container'>
-            <span className='quantity'>
-                {!ordered && (
-                    <>
-                        <div className='image-container'>
-                            <img src={cart.productImage} alt={cart.productName} />
-                        </div>
-                        <span className='name'>{cart.productName}</span>
-                        <div className={`arrow ${cart.quality === 1 ? 'disabled' : ''}`} onClick={cart.quality === 1 ? null : removeItemHandler}>
+        <div>
+            {!ordered && (
+                <div className='checkout-item-container'>
+                    <div className='image-container'>
+                        <img src={cart.productImage} alt={`${cart.productName}`} />
+                    </div>
+                    <span className='name'>
+                        <Title
+                            level={5}
+                            style={{
+                                marginBottom: 5,
+
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }}
+                        >
+                            {cart.productName}
+                        </Title>
+                    </span>
+                    <span className='quantity'>
+                        <div className='arrow' onClick={removeItemHandler}>
                             &#10094;
                         </div>
                         <span className='value'>{cart.quality}</span>
                         <div className='arrow' onClick={addItemHandler}>
                             &#10095;
                         </div>
-                        <span className='price'>{cart.productPrice}</span>
-                        <div className='remove-button' onClick={clearItemHandler}>
-                            &#10005;
+                    </span>
+                    <span className="price">
+                        {(cart.productPrice ? cart.productPrice.toLocaleString() : "0")} đ
+                    </span>
+                    <div className='remove-button' onClick={clearItemHandler}>
+                        &#10005;
+                    </div>
+                </div>
+            )}
+            {ordered && (
+                <>
+                    <div
+                        className={`ordered-header ${cart.shiped ? 'shipped' : 'not-shipped'}`}
+                    >
+                        <Title
+                            level={4}
+                            style={{
+                                marginBottom: 20,
+                                color: cart.shiped ? 'green' : 'orange', // Màu sắc dựa trên trạng thái shiped
+                                textAlign: 'left',
+                            }}
+                        >
+                            {cart.shiped ? 'Đã được giao hàng' : 'Đã đặt hàng'}
+                        </Title>
+                    </div>
+                    <div className='checkout-item-container'>
+                        <div className='image-container'>
+                            <img src={cart.productImage} alt={`${cart.productName}`} />
                         </div>
-                    </>
-                )}
+                        <span className='name'>
+                            <Title
+                                level={5}
+                                style={{
+                                    marginBottom: 5,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                }}
+                            >
+                                {cart.productName}
+                            </Title>
+                            <>x {cart.quality}</>
+                        </span>
+                        <span className='quantity'>
+                            <div style={{ color: 'green', marginBottom: 5 }}>
+                                <CheckCircleOutlined /> Đơn hàng đã được đặt
+                            </div>
+                        </span>
+                        <span className='price'> {(cart.productPrice ? cart.productPrice.toLocaleString() : "0")} đ</span>
+                        <div className='remove-button'>
+                            <Title
+                                level={5}
+                                style={{
+                                    marginBottom: 5,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                }}
+                            >
+                                {(cart.quality && cart.productPrice ? (cart.quality * cart.productPrice).toLocaleString() : "0")} đ
+                            </Title>
+                        </div>
+                    </div>
+                </>
+            )}
 
-                {ordered && (
-                    <Card style={{ marginBottom: 16 }} bordered={false}>
-                        <Row align="middle">
-                            {/* Image and Product Details */}
-                            <Col span={6}>
-                                <img
-                                    src={cart.productImage}
-                                    alt={cart.productName}
-                                    style={{ width: '100%', maxHeight: 120, objectFit: 'cover' }}
-                                />
-                            </Col>
-                            <Col span={12} style={{ paddingLeft: 10 }}>
-                                {/* Đơn hàng đã được đặt nằm bên trái tên sản phẩm */}
-                                <div style={{ color: 'green', marginBottom: 5 }}>
-                                    <CheckCircleOutlined /> Đơn hàng đã được đặt
-                                </div>
-                                <Title
-                                    level={5}
-                                    style={{
-                                        marginBottom: 5,
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                    }}
-                                >
-                                    {cart.productName}
-                                </Title>
-                                <Text>Số lượng: {cart.quality}</Text>
-                            </Col>
-                            {/* Giá tiền */}
-                            <Col span={6} style={{ textAlign: 'right' }}>
-                                <Text strong style={{ fontSize: 16 }}>
-                                    {`₫${(cart.quality * cart.productPrice).toLocaleString()}`}
-                                </Text>
-                            </Col>
-                        </Row>
-                    </Card>
-                )}
-            </span>
         </div>
     );
 }

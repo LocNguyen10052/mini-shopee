@@ -1,17 +1,15 @@
 import { and, collection, deleteDoc, doc, getDocs, increment, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db, storage } from "./firebase.utils";
-import { fetchCartSusscess, setProductCartData, setProductsID } from "../store/cart-store/cart-action";
+import { fetchCartSusscess, setCartDataFull, setProductCartData, setProductsID } from "../store/cart-store/cart-action";
 import { getDownloadURL, ref } from "firebase/storage";
 import { store } from "../store/store";
-import { setAdminCart } from "../store/cart-admin-store/cart-admin-action";
-import { updateCounpon } from "./firebase.coupon";
 
 let unSubscribeCart = [];
 
 // thêm các snapshot vào mảng
 
 export const addTocart = async (productID, userID) => {
-    const cartsQuery = query(collection(db, "cart"), and(where("productID", "==", productID), where("userID", "==", userID)));
+    const cartsQuery = query(collection(db, "cart"), and(where("productID", "==", productID), where("userID", "==", userID), where("ordered", "==", false)));
     const cartsSnapshot = await getDocs(cartsQuery);
     if (cartsSnapshot.empty) {
         try {
@@ -23,8 +21,10 @@ export const addTocart = async (productID, userID) => {
                 quality: 1,
                 userID,
                 cartID,
-                ordered: false
+                ordered: false,
+                shiped: false
             });
+
         } catch (error) {
             console.log(error)
         }
@@ -32,7 +32,6 @@ export const addTocart = async (productID, userID) => {
     else {
         updateCart(cartsSnapshot.docs[0].id, "Increase")
     }
-
 }
 
 // đây là hàm lấy cart snapshot
@@ -65,7 +64,6 @@ export const updateCart = async (cartID, type) => {
 
 // lấy card và productID
 export const getCartAndProductID = async (userID, dispatch) => {
-    console.log('on subscribeCart')
     const cartQuery = query(collection(db, "cart"), where("userID", "==", userID));
     const unsubscribe = onSnapshot(cartQuery, (queryCartSnapshot) => {
         const carts = [];
@@ -133,38 +131,9 @@ export const mergaCartAndProductData = (carts, productData) => {
     }
 }
 
-export const createOrder = async (form, currentUser, carts, bill) => {
-    try {
-        const cartsID = carts.map((cart) => cart.cartID)
-        const createdAt = new Date()
-        const cRef = collection(db, "orders");
-        const orderID = doc(cRef).id;
-        const dRef = doc(db, "orders", orderID);
-        await setDoc(dRef, {
-            orderID,
-            form,
-            cartsID,
-            counponID: bill.couponID,
-            createdAt,
-            "email": currentUser.email
-        });
-        await updateCartOrdered(cartsID);
-        if (bill.couponID !== 'null') {
-            await updateCounpon(bill.counponID, "Decrease");
-        }
-    } catch (error) {
-        console.log(error)
-    }
-}
 
-export const getAllOrder = async () => {
-    const querySnapshot = await getDocs(collection(db, "orders"));
-    const orders = [];
-    querySnapshot.forEach((doc) => {
-        orders.push(doc.data());
-    });
-    return orders;
-}
+
+
 export const getProductDataCartSnapShot = (productIDArray, dispatch) => {
     if (!productIDArray || productIDArray.length === 0) {
         return [];
@@ -192,14 +161,20 @@ export const getProductDataCartSnapShot = (productIDArray, dispatch) => {
     }
 }
 
-export const getCartALL = async () => {
+let unsubscribeAdmin = [];
+
+
+export const getCartALL = async (dispatch) => {
     const cartQuery = query(collection(db, "cart"));
-    const cartDocSnap = await getDocs(cartQuery);
-    const carts = [];
-    cartDocSnap.forEach((doc) => {
-        carts.push(doc.data());
+    const unsubscribe = onSnapshot(cartQuery, (queryCartSnapshot) => {
+        const carts = [];
+        queryCartSnapshot.forEach((doc) => {
+            carts.push(doc.data());
+        });
+        dispatch(setCartDataFull(carts));
     });
-    return carts;
+    unsubscribeAdmin.push(unsubscribe);
+
 }
 
 export const updateCartOrdered = async (cartsID) => {
@@ -211,9 +186,32 @@ export const updateCartOrdered = async (cartsID) => {
     })
 }
 
+export const updateCartShip = async (productID, quality, cartID) => {
+    try {
+        const productDocumentReference = doc(db, "product", productID);
+        const qualityupdate = -quality;
+
+        await updateDoc(productDocumentReference, {
+            productSoldCount: increment(qualityupdate)
+        });
+
+        const cartDocumentReference = doc(db, "cart", cartID);
+        await updateDoc(cartDocumentReference, {
+            shiped: true
+        });
+
+    } catch (error) {
+        console.log(error)
+    }
+};
+
 export const unSnapshotCart = () => {
-    console.log('unSubscribeCart')
     unSubscribeCart.forEach(subcriber => {
+        subcriber();
+    })
+}
+export const unSnapshotCartAdmin = () => {
+    unsubscribeAdmin.forEach(subcriber => {
         subcriber();
     })
 }

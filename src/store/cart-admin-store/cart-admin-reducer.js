@@ -15,6 +15,9 @@ export const cartAdminReducer = (state = INITIAL_CART, action = {}) => {
         case CART_ADMIN_ACTIONS_TYPE.SET_CART_DATA_SUCCESS: {
             return { ...state, cartsFull: payload };
         }
+        case CART_ADMIN_ACTIONS_TYPE.SET_CART_DATA_FULL: {
+            return { ...state, CartDataFull: payload };
+        }
         default:
             return state;
     }

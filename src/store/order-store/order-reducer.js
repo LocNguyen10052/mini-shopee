@@ -9,7 +9,7 @@ export const orderReducer = (state = INITIAL_ORDER, action) => {
     const { type, payload } = action
 
     switch (type) {
-        case ORDER_ACTIONS_TYPE.SET_CART:
+        case ORDER_ACTIONS_TYPE.SET_ORDER:
             return { ...state, orders: payload };
         default:
             return state;

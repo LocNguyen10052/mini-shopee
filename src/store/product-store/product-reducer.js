@@ -1,7 +1,7 @@
 
 
 const INITIAL_PRODUCT = {
-    products: null
+    products: []
 }
 export const PRODUCT_ACTIONS_TYPE = {
     CREATE_PRODUCT: 'CREATE_PRODUCT',

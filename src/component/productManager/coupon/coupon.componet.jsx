@@ -11,7 +11,6 @@ function Coupon() {
     const [form] = Form.useForm();
     const [coupons, setCoupons] = useState([]);
     const [isFormVisible, setIsFormVisible] = useState(false); // Trạng thái hiển thị form
-    const categories = useSelector(selectCategories)
     const handleTypeChange = (value) => {
         setCouponType(value);
     };

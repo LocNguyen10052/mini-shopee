@@ -53,3 +53,27 @@
     color: rgba(128, 128, 128, 0.397);
     /* Màu tô đen khi bị disable */
 }
+
+.ordered-header {
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border: 1px solid;
+    border-radius: 5px;
+    text-align: left;
+    padding-left: 15px;
+    margin-top: 20px;
+
+    &.shipped {
+        background-color: #f6ffed;
+        /* Xanh nhạt */
+        border-color: #b7eb8f;
+        /* Viền xanh lá */
+    }
+
+    &.not-shipped {
+        background-color: #fff7e6;
+        /* Cam nhạt */
+        border-color: #ffd591;
+        /* Viền cam */
+    }
+}

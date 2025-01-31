@@ -9,6 +9,8 @@ const items1 = [
     { id: 2, key: '/admin/createProduct', label: 'Tạo sản phẩm', path: '/admin/createProduct' },
     { id: 3, key: '/admin/order', label: 'Danh sách đơn hàng', path: '/admin/order' },
     { id: 4, key: '/admin/coupon', label: 'Danh sách mã khuyến mãi', path: '/admin/coupon' },
+    { id: 5, key: '/admin/stockout', label: 'Danh sách phiếu xuất kho', path: '/admin/stockout' },
+    { id: 6, key: '/admin/stockin', label: 'Danh sách phiếu nhập kho', path: '/admin/stockin' },
 ];
 
 // Chuyển đổi items1 thành cấu trúc phù hợp cho `items` của Menu

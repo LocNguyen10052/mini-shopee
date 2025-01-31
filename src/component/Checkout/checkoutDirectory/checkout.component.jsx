@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Card, Typography, Row, Col, Affix, Popover } from 'antd';
-import { DownOutlined, FlagFilled } from "@ant-design/icons";
+import { DownOutlined } from "@ant-design/icons";
 import CartItemComponent from '../cartitem/cartItem.component';
 import { selectCartDataFull, selectCartItemsTotal, selectProductID, selectCartProductData, selectCartItems } from '../../../store/cart-store/cart-selector';
 import { setCartData } from '../../../store/cart-store/cart-action';
-import { createOrder, mergaCartAndProductData } from '../../../utils/firebase.cart';
+import { mergaCartAndProductData } from '../../../utils/firebase.cart';
 import './checkout.style.scss';
 import EditAddressModal from '../EditAddressModal/editAddressModal.component';
 import { activeCouponUsers } from '../../../utils/firebase.coupon';
 import Bill from '../bill/bill.component';
 import { selectCurrentUser } from '../../../store/user-store/user-seletor';
-
-const { Text } = Typography;
+import { createOrder } from '../../../utils/firebase.order';
 
 function Checkout() {
     const cartsTotal = useSelector(selectCartItemsTotal);
@@ -49,11 +48,10 @@ function Checkout() {
 
     const handleSubmitCart = async () => {
         if (!formData.fullName || !formData.phoneNumber || !formData.address || !formData.ditrict) {
-
             setErrorMessage("Vui lòng điền đầy đủ thông tin!");
             return;
         } try {
-            await createOrder(formData, currentUser, carts, bill);
+            await createOrder(formData, currentUser, carts, bill, cartsData);
             setErrorMessage('')
             setCoupon('')
         } catch (error) {
@@ -103,7 +101,6 @@ function Checkout() {
         mergeCartProduct();
     }, [productIDCartArray, productCartData, carts]);
     useEffect(() => {
-        // setBill({ ...bill, cartsTotal, orderTotal: cartsTotal + bill.shipCost - bill.couponShipCost - bill.couponProductCost });
         if (bill.coupon_min_order_value > cartsTotal) {
             setErrorMessage("Đơn hàng không đủ điều kiện!");
             setSuccessMessage('')
@@ -144,14 +141,14 @@ function Checkout() {
                     onSubmit={handleSubmitFormInput}
                     initialValues={formData}
                 />
-                <div className='checkout-header' style={{ backgroundColor: 'white', marginBottom: '10px' }}>
+                <section className='checkout-header' style={{ backgroundColor: 'white', marginBottom: '10px' }}>
                     <div className='header-block'><span>Product</span></div>
                     <div className='header-block'><span>Description</span></div>
                     <div className='header-block'><span>Quantity</span></div>
                     <div className='header-block'><span>Price</span></div>
                     <div className='header-block'><span>Remove</span></div>
-                </div>
-                <div className='checkout-listItem' style={{ backgroundColor: 'white' }}>
+                </section>
+                <section className='checkout-listItem' style={{ backgroundColor: 'white' }}>
                     {
                         cartsData.map((cart) => {
                             if (!cart.ordered) {
@@ -159,7 +156,7 @@ function Checkout() {
                             }
                         })
                     }
-                </div>
+                </section>
                 <Affix offsetBottom={0}>
                     <Card
                         style={{
@@ -207,18 +204,27 @@ function Checkout() {
                         </Row>
                     </Card>
                 </Affix>
-
+                <div className='checkout-listItem' style={{ backgroundColor: 'white' }}>
+                    {
+                        cartsData.map((cart) => {
+                            if (cart.ordered) {
+                                return (<CartItemComponent key={cart.cartID} cart={cart} ordered={cart.ordered} />)
+                            }
+                        })
+                    }
+                </div>
             </Form>
-            <div className='checkout-listItem' style={{ backgroundColor: 'white' }}>
-                {
-                    cartsData.map((cart) => {
-                        if (cart.ordered) {
-                            return (<CartItemComponent key={cart.cartID} cart={cart} ordered={cart.ordered} />)
-                        }
-                    })
-                }
-            </div>
+
         </div>
+        // <div className='checkout-container'>
+        //     <div className='checkout-header' style={{ backgroundColor: 'white', marginBottom: '10px' }}>
+        //         <div className='header-block'><span>Product</span></div>
+        //         <div className='header-block'><span>Description</span></div>
+        //         <div className='header-block'><span>Quantity</span></div>
+        //         <div className='header-block'><span>Price</span></div>
+        //         <div className='header-block'><span>Remove</span></div>
+        //     </div>
+        // </div>
     );
 }
 

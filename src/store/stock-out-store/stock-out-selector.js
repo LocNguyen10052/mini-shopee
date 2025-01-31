@@ -1,0 +1,1 @@
+export const selectorStockOut = (state) => state.stockOuts.stockOuts

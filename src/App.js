@@ -21,9 +21,9 @@ import OrderAdmin from './component/productManager/orderAdmin/orderAdmin';
 import NotFound from './component/router/NotFound/NotFound';
 import LoginMangager from './component/productManager/login/loginMangager.component';
 import Coupon from './component/productManager/coupon/coupon.componet';
-
-
-
+import StockOut from './component/productManager/stock/stock-out.component';
+import { createNotification } from './utils/firebase.notification';
+import StockIn from './component/productManager/stockIn/stock-in.component';
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +36,7 @@ function App() {
     if (userIsLoaded) {
       const { email } = currentUser
       getCartAndProductID(email, dispatch);
+      createNotification(email, dispatch);
     }
   }, [dispatch, userIsLoaded]);
 
@@ -55,9 +56,12 @@ function App() {
         <Route path="/admin/createProduct" element={<CreateProduct></CreateProduct>}></Route>
         <Route path="/admin/order" element={<OrderAdmin></OrderAdmin>}></Route>
         <Route path="/admin/coupon" element={<Coupon></Coupon>}></Route>
+        <Route path="/admin/stockout" element={<StockOut></StockOut>}></Route>
+        <Route path="/admin/stockin" element={<StockIn></StockIn>}></Route>
       </Route>
       <Route path='/unauthorized' element={<NotFound></NotFound>}></Route>
       <Route path="/admin/login" element={<LoginMangager></LoginMangager>}></Route>
+
 
       {/* <Route element={<ProtectedRoute />}>
         

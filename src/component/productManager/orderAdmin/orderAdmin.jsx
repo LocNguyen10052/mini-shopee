@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Button, Typography, Card, Row, Col, Table } from 'antd';
 import { selectorOrder } from '../../../store/order-store/order-selector';
 import { ExportOutlined } from '@ant-design/icons';
 import { selectCartFull } from '../../../store/cart-store/cart-selector';
+import { selectorProduct } from '../../../store/product-store/product-selector';
+import { updateCartShip } from '../../../utils/firebase.cart';
+import { setAdminCartFullDATA } from '../../../store/cart-admin-store/cart-admin-action';
+import { selectorCartFullAdmin } from '../../../store/cart-admin-store/cart-admin-selector';
 
 const { Text } = Typography;
 
@@ -11,8 +15,12 @@ function OrderAdmin() {
     const orderAdmin = useSelector(selectorOrder);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    //cartData
     const cartFull = useSelector(selectCartFull);
-    const [orderCart, setOrderCart] = useState();
+    //order + cartdata
+    const orderCart = useSelector(selectorCartFullAdmin);
+    const product = useSelector(selectorProduct);
+    const dispatch = useDispatch();
     const handleCancel = () => {
         setIsModalOpen(!isModalOpen);
     }
@@ -21,14 +29,43 @@ function OrderAdmin() {
         setSelectedOrder(order);
         setIsModalOpen(!isModalOpen);
     }
-
-    const mapOrderCart = () => {
-        const orderCartUpdate = orderAdmin.map(order => order.cartsID.map(cartid => cartFull.find(cart => cart.cartID === cartid)));
-        setOrderCart(orderCartUpdate);
+    const handleShipOrder = async (cartItem) => {
+        await updateCartShip(cartItem.productID, cartItem.quality, cartItem.cartID)
     }
+    const mapOrderCart = () => {
+
+        if (orderAdmin && orderAdmin.length > 0 && cartFull.length > 0 && product.length > 0) {
+            // Bước 1: Merge dữ liệu từ cartFull và product
+            const cartsFullData = cartFull.map(cartItem => {
+                const productData = product.find(prod => prod.productID === cartItem.productID);
+                return {
+                    ...cartItem,
+                    ...productData,
+                };
+            });
+            //Merge orderAdmin với cartsFullData
+            const orderCartUpdate = orderAdmin.map(order => {
+                const cartDetails = order.cartsID.map(cartID => {
+                    return cartsFullData.find(cart => cart.cartID === cartID);
+                }).filter(Boolean);
+                return {
+                    ...order,
+                    cartDetails: cartDetails
+                };
+            });
+            // Bước 3: Set kết quả vào state
+            dispatch(setAdminCartFullDATA(orderCartUpdate))
+
+        }
+    };
+
     useEffect(() => {
         mapOrderCart();
-    }, [orderAdmin, cartFull])
+        if (selectedOrder) {
+            const updatedOrder = orderCart.find(order => order.orderID === selectedOrder.orderID);
+            setSelectedOrder(updatedOrder || null);
+        }
+    }, [orderAdmin, cartFull, product])
 
     const columns = [
         {
@@ -45,13 +82,20 @@ function OrderAdmin() {
             title: 'Ngày',
             dataIndex: 'createdAt',
             key: 'createdAt',
-            render: (record) => {
-                const date = new Date(record.seconds * 1000); // Chuyển đổi từ timestamp giây sang ngày
-                return date.toLocaleString(); // Định dạng ngày theo locale
-            }
+            render: (createAt) => {
+                if (!createAt || !createAt.seconds) return 'N/A'; // Handle missing or invalid data
+                return new Date(createAt.seconds * 1000).toLocaleString('en-GB', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                });
+            },
         },
         {
-            title: 'Discount',
+            title: 'Chi tiết',
             dataIndex: 'discount',
             key: 'discount',
             render: (_, record) => (
@@ -66,7 +110,7 @@ function OrderAdmin() {
 
     return (
         <div>
-            <Table dataSource={orderAdmin} columns={columns} bordered />
+            <Table dataSource={orderCart} columns={columns} bordered />
 
             {selectedOrder && (
                 <Modal
@@ -74,7 +118,7 @@ function OrderAdmin() {
                     open={isModalOpen}
                     onCancel={handleCancel}
                     footer={null}
-                    width={600}
+                    width={1000}
                 >
                     <Card title="Thông tin người nhận" style={{ marginBottom: 20 }}>
                         <Row>
@@ -97,19 +141,45 @@ function OrderAdmin() {
                     </Card>
 
                     <Card title="Thông tin giỏ hàng" style={{ marginBottom: 20 }}>
-                        {orderCart.map((carts) => carts.map(cartItem => ((
+                        {console.log(selectedOrder.cartDetails, orderCart)}
+                        {selectedOrder.cartDetails && selectedOrder.cartDetails.map((cartItem) =>
                             <Row key={cartItem.cartID} style={{ marginBottom: 10 }}>
-                                <Col span={12}>
+                                <Col span={8}>
                                     <Text strong>ID sản phẩm: </Text>
-                                    {cartItem.cartID}
+                                    {cartItem.productID}
                                 </Col>
-                                <Col span={12}>
+                                <Col span={4}>
                                     <Text strong>Số lượng: </Text>
                                     {cartItem.quality}
                                 </Col>
+                                <Col span={4}>
+                                    <Text strong>Số lượng kho: </Text>
+                                    {cartItem.productSoldCount}
+                                </Col>
+                                <Col span={4}>
+                                    <Text strong>Số tiền: </Text>
+                                    {(cartItem.productPrice * cartItem.quality).toLocaleString()}
+                                </Col>
+                                <Col span={4}>
+                                    {/* Kiểm tra số lượng quality và productSoldCount */}
+                                    {cartItem.quality > cartItem.productSoldCount ? (
+                                        <Button danger onClick={() => handleShipOrder(cartItem)}>
+                                            Thông báo
+                                        </Button>
+                                    ) : cartItem.shiped ? (
+
+                                        <Button type="primary" disabled>
+                                            {console.log(cartItem.shiped)}
+                                            Đang giao hàng
+                                        </Button>
+                                    ) : (
+                                        <Button onClick={() => handleShipOrder(cartItem)}>Giao hàng{console.log(cartItem.shiped)}</Button>
+                                    )}
+                                </Col>
                             </Row>
-                        ))))}
+                        )}
                     </Card>
+
 
                     <Card title="Thông tin đơn hàng" style={{ marginBottom: 20 }}>
                         <Row>

@@ -8,6 +8,11 @@ import { selectCartItemsCount, selectProductID } from '../../../store/cart-store
 import { signOutStart } from '../../../store/user-store/user-action';
 import { selectCurrentUser, selectLoadedUser } from '../../../store/user-store/user-seletor';
 import { getProductDataCartSnapShot, unSnapshotCart } from '../../../utils/firebase.cart';
+import { selectorNotification, selectorReadNotifications } from '../../../store/notification-store/notification-selector';
+import { Avatar, Badge, Typography, Dropdown, List, Button } from 'antd';
+import { BellOutlined } from '@ant-design/icons';
+import { readNotification } from '../../../utils/firebase.notification';
+const { Title, Text } = Typography;
 
 
 function Navigation() {
@@ -17,7 +22,8 @@ function Navigation() {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const cartTotal = useSelector(selectCartItemsCount);
     const productIDCartArray = useSelector(selectProductID);
-
+    const notifications = useSelector(selectorNotification);
+    const unReadNotifications = useSelector(selectorReadNotifications);
 
     const toggleIsCartOpen = () => {
         setIsCartOpen(!isCartOpen);
@@ -25,11 +31,101 @@ function Navigation() {
 
     const fetchProductCartData = async () => {
         if (!productIDCartArray.empty) {
-            // const productCartData = await getProductDataCart(productIDCartArray);
-            // dispatch(setProductCartData(productCartData))
             getProductDataCartSnapShot(productIDCartArray, dispatch)
         }
     }
+    const handleNotificationClick = async (item) => {
+        readNotification(item)
+    };
+
+    const dropdownContent = (
+        <div
+            style={{
+                width: 500,
+                height: 500, // Chiều cao cố định
+                backgroundColor: "white",
+                border: "1px solid #d9d9d9",
+                borderRadius: 8,
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                flexDirection: "column", // Để chứa cả list và button
+            }}
+        >
+            {/* Tiêu đề "Thông báo mới nhận" */}
+            <div
+                style={{
+                    padding: "5px",
+                    backgroundColor: "#f5f5f5", // Màu nền nhẹ cho tiêu đề
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    color: "#333",
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                    marginBottom: "1px", // Giãn cách giữa tiêu đề và danh sách
+                }}
+            >
+                Thông báo mới nhận
+            </div>
+
+            {/* Danh sách thông báo */}
+            <div style={{ flex: 1, overflowY: "auto" }}>
+                <List
+                    itemLayout="horizontal"
+                    dataSource={notifications}
+                    renderItem={(item) => (
+                        <List.Item
+                            style={{
+                                borderBottom: "1px solid #f0f0f0",
+                                padding: '15px',
+                                backgroundColor: item.read ? "#FFFFFF" : "#FFF2EE", // Kiểm tra thuộc tính read
+                                transition: "background-color 0.3s, box-shadow 0.3s", // Hiệu ứng chuyển đổi mượt mà
+                                cursor: "pointer"
+                            }}
+                            onClick={() => handleNotificationClick(item)} // Xử lý khi click vào thông báo
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = "#FFFFFF"
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = item.read ? "#FFFFFF" : "#FFF2EE";
+                            }}
+                        >
+                            <List.Item.Meta
+
+                                avatar={<Avatar src={item.image} size={48} />}
+                                title={
+                                    <Title level={5} style={{ margin: 0, color: "#333" }}>
+                                        {item.message}
+                                    </Title>
+                                }
+                                description={
+                                    <div style={{ marginTop: 4 }}>
+                                        <Text type="secondary" style={{ fontSize: 14 }}>
+                                            {item.description}
+                                        </Text>
+                                    </div>
+                                }
+                            />
+                        </List.Item>
+                    )}
+                />
+            </div>
+
+            {/* Nút "Xóa tất cả" */}
+            <Button
+                type="text"
+                style={{
+                    alignSelf: "flex-end", // Căn phải
+                    marginTop: "10px", // Khoảng cách từ danh sách đến nút
+                    fontSize: "14px",
+                    color: "#FF4D4F", // Màu đỏ cho nút
+                }}
+            >
+                Đọc tất cả
+            </Button>
+        </div>
+    );
+
+
     useEffect(() => {
         if (productIDCartArray.length > 0) {
             fetchProductCartData();
@@ -78,7 +174,18 @@ function Navigation() {
                     <ul className="nav-bar">
                         <li className="nav-link-container">
                             <a className="nav-link" to='/'>
-                                <svg viewBox="3 2.5 14 14" x="0" y="0" className="shopee-svg-icon icon-notification-2"><path d="m17 15.6-.6-1.2-.6-1.2v-7.3c0-.2 0-.4-.1-.6-.3-1.2-1.4-2.2-2.7-2.2h-1c-.3-.7-1.1-1.2-2.1-1.2s-1.8.5-2.1 1.3h-.8c-1.5 0-2.8 1.2-2.8 2.7v7.2l-1.2 2.5-.2.4h14.4zm-12.2-.8.1-.2.5-1v-.1-7.6c0-.8.7-1.5 1.5-1.5h6.1c.8 0 1.5.7 1.5 1.5v7.5.1l.6 1.2h-10.3z"></path><path d="m10 18c1 0 1.9-.6 2.3-1.4h-4.6c.4.9 1.3 1.4 2.3 1.4z"></path></svg>
+                                <Dropdown placement="bottomRight" overlay={dropdownContent} trigger={["click"]}>
+                                    <Badge count={unReadNotifications}
+                                        style={{
+                                            backgroundColor: "#ffffff", // Nền màu trắng
+                                            color: "#F9502F", // Chữ màu xám
+                                            fontWeight: "bold", // Định dạng chữ đậm (nếu cần)
+                                            borderRadius: "12px", // Góc bo tròn
+                                        }}
+                                        offset={[-25, 0]}>
+                                        <BellOutlined style={{ fontSize: 18, cursor: "pointer", color: 'white' }} />
+                                    </Badge>
+                                </Dropdown>
                                 <span className="span-class">Thông báo</span>
                             </a>
                         </li>
@@ -156,7 +263,6 @@ function Navigation() {
                     {isCartOpen && <DropBoxCart />}
                 </div>
             </div>
-
         </Fragment >
     );
 }

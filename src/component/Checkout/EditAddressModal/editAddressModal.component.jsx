@@ -7,7 +7,6 @@ function EditAddressModal({ isVisible, onCancel, onSubmit, initialValues }) {
     const [form] = Form.useForm();
     const [cityData, setCityData] = useState();
     const handleSubmit = (values) => {
-        console.log('Form values:', values);
         onSubmit(values);
     };
     useEffect(() => {

@@ -1,17 +1,16 @@
-import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, increment, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "./firebase.utils";
 import { v4 } from "uuid";
 import { createProductAction } from "../store/product-store/product-action";
 
-export const createProduct = async (productCreate, image) => {
-    console.log("create")
-    const { productName, productTitle, productPrice, productSoldCount, productLocation, categoryID } = productCreate
-    const imgRef = ref(storage, `files/productImage/${v4()}`)
+export const createProduct = async (productCreate) => {
+    const { productID, productName, productTitle, productPrice, productSoldCount, productLocation, categoryID, productImage, stockInID } = productCreate
+    const productQuery = query(collection(db, "product"), where("productID", "==", productID));
+    const productSnapshot = await getDocs(productQuery);
     try {
-        uploadBytes(imgRef, image, { contentType: 'image/png' }).then(async (snapshot) => {
-            const productRef = collection(db, "product");
-            const productID = doc(productRef).id;
+        if (productSnapshot.empty) {
+
             const productDocRef = doc(db, "product", productID);
             await setDoc(productDocRef, {
                 productName,
@@ -19,17 +18,34 @@ export const createProduct = async (productCreate, image) => {
                 productPrice,
                 productSoldCount,
                 productLocation,
-                "productImage": snapshot.metadata.fullPath,
                 productID,
-                categoryID
-            })
-        }).catch((error) => {
-            console.log(error)
-        });
-    } catch (error) {
+                categoryID,
+                productImage
 
+            }).catch((error) => {
+                console.log(error)
+            });
+            const stockInDocumentReference = doc(db, 'stockIn', stockInID)
+            await updateDoc(stockInDocumentReference, {
+                imported: true
+            });
+        }
+        else {
+            const productDocumentReference = doc(db, 'product', productID)
+            await updateDoc(productDocumentReference, {
+                productSoldCount: increment(productSoldCount)
+            });
+            const stockInDocumentReference = doc(db, 'stockIn', stockInID)
+            await updateDoc(stockInDocumentReference, {
+                imported: true
+            });
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
+
+
 
 export const findAllProductByCategoryID = async (categoryID) => {
     try {
@@ -73,22 +89,23 @@ export const findProductByID = async (productID) => {
     })
     return productdata
 }
-export const findAllProduct = async () => {
+export const findAllProduct = async (dispatch) => {
     try {
-        const productFromDoc = query(collection(db, `product`))
-        const queryProductSnapshot = await getDocs(productFromDoc);
-        const arrayProduct = queryProductSnapshot.docs
-        const productsDataFilterDTO = await Promise.all(arrayProduct.map(async (product) => {
-            try {
-                const productdata = product.data();
-                const url = await getDownloadURL(ref(storage, `${productdata.productImage}`));
-                productdata.productImage = url;
-                return productdata;
-            } catch (error) {
-                console.log(error)
-            }
-        }));
-        return productsDataFilterDTO
+        const productFromDoc = collection(db, `product`)
+        const unsubscribe = onSnapshot(productFromDoc, async (querySnapshot) => {
+            const arrayProduct = querySnapshot.docs;
+            const productsDataFilterDTO = await Promise.all(arrayProduct.map(async (product) => {
+                try {
+                    const productData = product.data();
+                    const url = await getDownloadURL(ref(storage, `${productData.productImage}`));
+                    productData.productImage = url;
+                    return productData;
+                } catch (error) {
+                    console.log(error);
+                }
+            }));
+            dispatch(createProductAction(productsDataFilterDTO));
+        });
     }
     catch (error) {
         console.log(error)

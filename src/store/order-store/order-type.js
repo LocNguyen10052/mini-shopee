@@ -1,3 +1,3 @@
 export const ORDER_ACTIONS_TYPE = {
-    SET_CART: "SET_CART"
+    SET_ORDER: "SET_ORDER"
 }

@@ -14,7 +14,7 @@ const middleWares = [process.env.NODE_ENV === 'development' && loggerMiddleware,
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user', 'carts', 'categories', 'products'],
+    blacklist: ['user', 'carts', 'categories', 'products', 'orders', 'stockOuts', 'notifications', 'cartAdmins', 'stockIns'],
 
 }
 const composeEnhancer = (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
